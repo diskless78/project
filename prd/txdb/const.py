@@ -58,7 +58,7 @@ class TXFOOTER:
     QUERY_KEY = "SZDATE"
     PARTITION_CLAUSE = "date(`bizdate`)"
     SORT_BY = ["lretailstoreid", "sztatype"]
-    START_YEAR = 2025
+    START_YEAR = 2024
     START_MONTH = 1
     
     ADD_COLUMNS = [

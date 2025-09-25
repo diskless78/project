@@ -84,29 +84,6 @@ def read_data(spark, mssql_cred: dict, sql_query: str, remove_columns: list, ren
         logger.error("Failed to read data from MSSQL: %s", e)
         raise
 # ===================================== Optimize the table ==========================================
-def compact_and_zorder(spark, table_name: str, zorder_cols_list: list):
-    zorder_cols_str = ", ".join(zorder_cols_list)
-    
-    logger.info("Starting data compaction (binpack) for table: %s", table_name)
-    try:
-        spark._jsparkSession.catalog().get(table_name).getJavaTable().compact(
-            'binpack',
-            {'target-file-size-bytes': '536870912'}
-        )
-        logger.info("Data compaction completed successfully.")
-    except Exception as e:
-        logger.error(f"Failed to perform data compaction: {e}", exc_info=True)
-        
-    logger.info("Starting Z-order rewrite for table: %s", table_name)
-    try:
-        spark._jsparkSession.catalog().get(table_name).getJavaTable().sort(
-            zorder_cols_list,
-            {'rewrite-all': 'true'}
-        )
-        logger.info("Z-order rewrite completed successfully.")
-    except Exception as e:
-        logger.error(f"Failed to perform Z-order rewrite: {e}", exc_info=True)
-# ===================================== Main Job Logic ==============================================
 def run_job(source_table_name: str):
     
     start_time = time.time()
@@ -307,8 +284,6 @@ def run_job(source_table_name: str):
                 df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
                 if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE, mode = 1)
 
-        # Optimize the table with binpack and zorder
-        compact_and_zorder(spark, ICEBERG_TABLE, sort_by)         
         logger.info("Job completed in %.2f seconds.", time.time() - start_time)
         
     except Exception as e:
