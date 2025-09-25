@@ -1,0 +1,5 @@
+MSSQL_HOST=mssql-kmsdb-sec.centralretail.com.vn
+MSSQL_DB=KMSDB
+MSSQL_PORT=1433
+MSSQL_USERNAME=sa
+MSSQL_PASSWORD='tENS78aN22x!8Z^eknm%'

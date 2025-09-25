@@ -1,0 +1,5 @@
+MSSQL_HOST=mssql-txdb-sec.centralretail.com.vn
+MSSQL_DB=TXDB
+MSSQL_PORT=1433
+MSSQL_USERNAME=DBReadOnly
+MSSQL_PASSWORD='syjTP!MH5&jY&C@2'
