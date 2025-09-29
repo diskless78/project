@@ -12,7 +12,7 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 sys.path.append(str(ROOT_DIR))
 
 from lib.spark.session import SparkUtil
-from lib.database.mssql_reader import MSSQLReader
+from lib.database.postgres_reader import PostgresReader
 from lib.iceberg.writer import IcebergTable
 import const
 
@@ -25,9 +25,8 @@ CRED_PATH = Path(__file__).resolve().parent / ".cred"
 def get_date_range_strings(start_dt: datetime, end_dt: datetime):
     """Formats 'YYYY-MM-DD 00:00:00' strings for SQL queries."""
     
-    start_date_str = start_dt.strftime('%Y%m%d')
-    end_date_str = end_dt.strftime('%Y%m%d')
-        
+    start_date_str = start_dt.strftime('%Y-%m-%d 00:00:00')
+    end_date_str = end_dt.strftime('%Y-%m-%d 00:00:00')
     return start_date_str, end_date_str
 # ======================================== Write sql_query  ========================================
 def write_sqlquery(table_name, query_key, start_dt, end_dt):
@@ -42,11 +41,10 @@ def write_sqlquery(table_name, query_key, start_dt, end_dt):
     return sql_query
 
 # ================================= Read data from source database ==================================
-def read_data(spark, mssql_cred: dict, sql_query: str, remove_columns: list, rename_columns: list, add_columns: list, convert_columns: list) -> DataFrame:
+def read_data(spark, postgre_cred: dict, sql_query: str, remove_columns: list, rename_columns: list, add_columns: list, convert_columns: list) -> DataFrame:
     try:
-        
-        mssql_reader = MSSQLReader(spark=spark, conf=mssql_cred)
-        df = mssql_reader.query_table(sql_query)
+        postgre_reader = PostgresReader(spark=spark, conf=postgre_cred)
+        df = postgre_reader.query_table(sql_query)
         
         if df.count() > 0:
             df = df.toDF(*[c.lower() for c in df.columns])
@@ -57,14 +55,13 @@ def read_data(spark, mssql_cred: dict, sql_query: str, remove_columns: list, ren
                     df = df.drop(col_name)
                 else:
                     logger.warning(f"Column '{col_name}' not found in source DataFrame. Skipping removal.")
-        
+                    
             # Rename column
             for col_from, col_to in rename_columns:
                 if col_from in df.columns:
                     df = df.withColumnRenamed(col_from, col_to)
                 else:
                     logger.warning(f"Column '{col_from}' not found in source DataFrame. Skipping rename to '{col_to}'.")
-                    
             # Add column with value
             for col_name, value in add_columns:
                 if value.lower() == "current_timestamp":
@@ -97,13 +94,13 @@ def read_data(spark, mssql_cred: dict, sql_query: str, remove_columns: list, ren
                     logger.error(f"Unsupported value type for column '{col_name}'. Aborting.")
                     raise ValueError(f"Unsupported value type for column '{col_name}'")
                 
-        logger.info("Successfully read data from MSSQL. Row count: %s", df.count())
+        logger.info("Successfully read data from PostgreSQL. Row count: %s", df.count())
         return df
     except Exception as e:
-        logger.error("Failed to read data from MSSQL: %s", e)
+        logger.error("Failed to read data from PostgreSQL: %s", e)
         raise
 
-# ===================================== Main Job Logic ==============================================
+# ===================================== Main Job ====================================================
 def run_job(source_table_name: str):
     
     start_time = time.time()
@@ -111,17 +108,18 @@ def run_job(source_table_name: str):
     spark = None
     
     try:
-        # Configure mssql_reader
-        creds = MSSQLReader.load_credentials(CRED_PATH)
-        mssql_cred = {
-            "host": creds["MSSQL_HOST"],
-            "port": int(creds.get("MSSQL_PORT")),
-            "username": creds["MSSQL_USERNAME"],
-            "password": creds["MSSQL_PASSWORD"],
-            "database": creds["MSSQL_DB"]
+        # Configure postgre_reader
+        creds = PostgresReader.load_credentials(CRED_PATH)
+        
+        postgre_cred = {
+            "host": creds["POSTGRESQL_HOST"],
+            "port": int(creds["POSTGRESQL_PORT"]),
+            "username": creds["POSTGRESQL_USERNAME"],
+            "password": creds["POSTGRESQL_PASSWORD"],
+            "database": creds["POSTGRESQL_DB"]
         }
         
-        # ====================================== Get value from the txdb config =================================================
+        # ====================================== Get value from the const config =================================================
         table_config = getattr(const, source_table_name.split('.')[1].upper())
         load_start_year = getattr(table_config, 'START_YEAR', const.DEFAULT_START_YEAR)
         load_start_month = getattr(table_config, 'START_MONTH', const.DEFAULT_START_MONTH)
@@ -137,7 +135,7 @@ def run_job(source_table_name: str):
         
         ICEBERG_TABLE = f"{const.LAKEHOUSE_CATALOG}.{const.LAKEHOUSE_NAMESPACE}.{const.LAKEHOUSE_PREFIX}{getattr(table_config, 'LAKEHOUSE_TABLENAME', source_table_name.split('.')[1].lower())}"
         SPARK_APP = source_table_name.split('.')[1]
-        # ====================================== Get value from the txdb config =================================================
+        # ====================================== Get value from the const config =================================================
         logger.info("Initializing Spark session...")
         spark = SparkUtil.get_spark_session(SPARK_APP, const.LAKEHOUSE_CATALOG, const.NESSIE_BRANCH)
         
@@ -145,21 +143,19 @@ def run_job(source_table_name: str):
         existing_table = spark.catalog.tableExists(ICEBERG_TABLE)
         
         if load_start_year is None:  # Case: Table < 5M records
-           
             logger.info("Configuration is set for 'Always Full Load'.")
             if not existing_table:
-                schema_query = f"SELECT TOP 1 * FROM {source_table_name}"
-                df_schema = read_data(spark, mssql_cred, schema_query, remove_columns, rename_columns, add_columns, convert_columns)
+                schema_query = f"SELECT * FROM {source_table_name} LIMIT 1"
+                df_schema = read_data(spark, postgre_cred, schema_query, remove_columns, rename_columns, add_columns, convert_columns)
                 logger.info("Table does not exist. Creating table for full load...")
                 writer.create_table(
                     df=df_schema,
                     table_name=ICEBERG_TABLE,
                     partition_clause=partition_clause
                 )
-            
             logger.info("Performing full load...")
             sql_query = f"SELECT * FROM {source_table_name}"
-            df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
+            df = read_data(spark, postgre_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
             if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE, mode = 1)
             
         elif load_start_year == 0: # Case: Table With No Timstamp Field
@@ -170,26 +166,25 @@ def run_job(source_table_name: str):
                 logger.error("Failed to extract a valid batch_step from PARTITION_CLAUSE. Aborting.")
                 sys.exit(1)
             
-            mssql_reader = MSSQLReader(spark=spark, conf=mssql_cred)
+            postgre_reader = PostgresReader(spark=spark, conf=postgre_cred)
             min_value_query = f"SELECT MIN({query_key}) AS min_value FROM {source_table_name}"
             max_value_query = f"SELECT MAX({query_key}) AS max_value FROM {source_table_name}"
             
             logger.info(f"Batch step extracted: {batch_step}. Starting batched load...")
             if not existing_table:
-                schema_query = f"SELECT TOP 1 * FROM {source_table_name}"
-                df_schema = read_data(spark, mssql_cred, schema_query, remove_columns, rename_columns, add_columns, convert_columns)
+                schema_query = f"SELECT * FROM {source_table_name} LIMIT 1"
+                df_schema = read_data(spark, postgre_cred, schema_query, remove_columns, rename_columns, add_columns, convert_columns)
                 logger.info("Table does not exist. Creating table for full load...")
                 writer.create_table(
                     df=df_schema,
                     table_name=ICEBERG_TABLE,
                     partition_clause=partition_clause
                 )
-                
                 # Get min and max base on query_key
                 logger.info(f"Getting MIN and MAX {query_key} to split base on batch_step.")
                 
-                min_value = mssql_reader.execute_query(min_value_query)
-                max_value = mssql_reader.execute_query(max_value_query)
+                min_value = postgre_reader.execute_query(min_value_query)
+                max_value = postgre_reader.execute_query(max_value_query)
                 
                 while True:
                     current_max_value = min_value + batch_step
@@ -197,31 +192,31 @@ def run_job(source_table_name: str):
                     if current_max_value >= max_value:
                         sql_query = f"SELECT * FROM {source_table_name} WHERE {query_key} BETWEEN {min_value} AND {max_value}"
                         
-                        df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
+                        df = read_data(spark, postgre_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
                         if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE)
                         break
                     else:
                         sql_query = f"SELECT * FROM {source_table_name} WHERE {query_key} BETWEEN {min_value} AND {current_max_value}"
 
-                        df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
+                        df = read_data(spark, postgre_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
                         if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE)
 
                         min_value = current_max_value + 1
                         
             else: # Schedule: Incremental get max & min = max- batch_step
                 
-                max_value = mssql_reader.execute_query(max_value_query)
+                max_value = postgre_reader.execute_query(max_value_query)
                 min_value = (max_value // batch_step) * batch_step
                 sql_query = f"SELECT * FROM {source_table_name} WHERE {query_key} BETWEEN {min_value} AND {max_value}"
                 
-                df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
+                df = read_data(spark, postgre_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
                 if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE, mode = 1)
                  
         else: # Case: Normal Table -> Timestamp Field
             if not existing_table:
                 # First run: Pulling each year
-                schema_query = f"SELECT TOP 1 * FROM {source_table_name}"
-                df_schema = read_data(spark, mssql_cred, schema_query, remove_columns, rename_columns, add_columns, convert_columns)
+                schema_query = f"SELECT * FROM {source_table_name} LIMIT 1"
+                df_schema = read_data(spark, postgre_cred, schema_query, remove_columns, rename_columns, add_columns, convert_columns)
                 logger.info("Table does not exist. Performing full load from %s.", load_start_year)
                 writer.create_table(
                     df=df_schema,
@@ -236,7 +231,7 @@ def run_job(source_table_name: str):
                     for year in range(current_year_start, current_year_end + 1):
                         sql_query = f"SELECT * FROM {source_table_name} WHERE EXTRACT (YEAR FROM {query_key}) = {year}"
                         logger.info("Processing data for year: %s", year)
-                        df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
+                        df = read_data(spark, postgre_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
                         if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE)
                         
                 else: # Pull month by month per year
@@ -267,7 +262,7 @@ def run_job(source_table_name: str):
                                 logger.info("Processing monthly full load: %s-%s", year, month)
                                 sql_query = write_sqlquery(source_table_name, query_key, start_dt, end_dt)
                                 
-                                df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
+                                df = read_data(spark, postgre_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
                                 if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE)
                                 
                             elif pull_day == "Y":
@@ -285,7 +280,7 @@ def run_job(source_table_name: str):
 
                                     sql_query = write_sqlquery(source_table_name, query_key, start_dt, end_dt)
                                     
-                                    df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
+                                    df = read_data(spark, postgre_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
                                     if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE)
 
                             else:
@@ -319,7 +314,7 @@ def run_job(source_table_name: str):
                         
                         sql_query = write_sqlquery(source_table_name, query_key, datetime.combine(start_date_sql, datetime.min.time()), datetime.combine(end_date_sql, datetime.min.time()))
                         
-                        df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
+                        df = read_data(spark, postgre_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
                         if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE, mode = 1)
                               
                     elif incremental_month > 1:
@@ -335,7 +330,7 @@ def run_job(source_table_name: str):
                         logger.info(f"Table exists. Monthly Incremental from {incremental_month} months ago ({start_date_sql}) up to Current Month.")
                         sql_query = write_sqlquery(source_table_name, query_key, datetime.combine(start_date_sql, datetime.min.time()), datetime.combine(end_date_sql, datetime.min.time()))
                         
-                        df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
+                        df = read_data(spark, postgre_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
                         if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE, mode = 1)
                         
                     else:
@@ -352,14 +347,15 @@ def run_job(source_table_name: str):
                     logger.info(f"Monthly Incremental from {start_date_sql} up to {end_date_sql}")
                     sql_query = write_sqlquery(source_table_name, query_key, datetime.combine(start_date_sql, datetime.min.time()), datetime.combine(end_date_sql, datetime.min.time()))
                     
-                    df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
+                    df = read_data(spark, postgre_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
                     if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE, mode = 1)
                     
                 else:
                     logger.error("Invalid value for 'pull_day' in incremental mode. Must be 'Y' or 'N'. Aborting.")
                     sys.exit(1)
-
+                
         logger.info("Job completed in %.2f seconds.", time.time() - start_time)
+        
     except Exception as e:
         logger.error("Error job execution: %s", e, exc_info=True)
         sys.exit(1)

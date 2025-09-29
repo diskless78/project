@@ -7,7 +7,9 @@
     5. If START_YEAR = 0 then pulling data base on min and max of the QUERY_KEY, this case need to partition with truncate
     6. If DEFAULT_START_YEAR = None then pulling all the data without QUERY_KEY
     7. If DEFAULT_START_MONTH = None which mean pull year by year - if it's number included zero which mean pull month by month per year starting with START_MONTH (START_MONTH = 0/1 are the same).
-
+    8. If LAKEHOUSE_TABLENAME is not defined then the iceberg table will be used LAKEHOUSE_PREFIX + SOURCE_TABLENAME
+    
+    LAKEHOUSE_TABLENAME = "txfooter_created_by_dremio"
     PARTITION_CLAUSE = "truncate(`recid`, 1000000)" ---- Example: months(`bizdate`), bucket(16, `lretailstoreid`)
     PARTITION_CLAUSE = "truncate(6, `szdate`)"
     PARTITION_CLAUSE = "date(`bizdate`)"
@@ -15,7 +17,6 @@
     PARTITION_CLAUSE = "months(`bizdate`)"
     PARTITION_CLAUSE = "year(`bizdate`)"
     PARTITION_CLAUSE = "szdate"
-    SORT_BY = ["inventtransid", "itemid"]
     
     REMOVE_COLUMNS = ["trxid"]
     
@@ -35,28 +36,34 @@
     INCREMENTAL_MONTH = 2, DEFAULT_INCREMENTAL_MONTH = 1
     START_YEAR = 2020 - START_YEAR = 2024 (Remove this in the Class mean None)
     START_MONTH = 0 - START_MONTH = 1  - START_MONTH = 9 (Remove this in the Class mean None)
+    PULL_DAY = "Y"
+    INCREMENTAL_DAY = 3
 """
 
+
 # =============================== Global Declarations ===============================
+NESSIE_BRANCH = "main"
 LAKEHOUSE_CATALOG = "lakehouse_raw"
 LAKEHOUSE_NAMESPACE = "ax"
 LAKEHOUSE_PREFIX = "r_"
+
 DEFAULT_START_YEAR = None
 DEFAULT_START_MONTH = None
 DEFAULT_INCREMENTAL_MONTH = 1
+DEFAULT_PULL_DAY = "N"
+DEFAULT_INCREMENTAL_DAY = 1
 DEFAULT_PARTITION_CLAUSE = ""
 DEFAULT_QUERY_KEY = ""
-DEFAULT_SORT_BY = ""
+DEFAULT_REMOVE_COLUMNS = []
 DEFAULT_RENAME_COLUMNS = []
 DEFAULT_ADD_COLUMNS = []
-DEFAULT_REMOVE_COLUMNS = []
+DEFAULT_CONVERT_COLUMNS = []
 
 # ============================== AXDB-CBS ===========================================
 class INVENTTRANS:
     LAKEHOUSE_TABLENAME = "ax_invent_trans"
     QUERY_KEY = "MODIFIEDDATETIME"
     PARTITION_CLAUSE = "months(`modifieddatetime`)"
-    SORT_BY = ["costamountposted", "itemid"]
     START_YEAR = 2020
     RENAME_COLUMNS = [
         ("partition", "partition_id")
@@ -66,7 +73,6 @@ class INVENTTRANSORIGIN:
     LAKEHOUSE_TABLENAME = "ax_invent_trans_origin"
     QUERY_KEY = "RECID"
     PARTITION_CLAUSE = "truncate(`recid`, 10000000)"
-    SORT_BY = ["inventtransid", "itemid"]
     START_YEAR = 0
     RENAME_COLUMNS = [
         ("partition", "partition_id")
@@ -74,7 +80,6 @@ class INVENTTRANSORIGIN:
 
 class RETAILCHANNELTABLE:
     LAKEHOUSE_TABLENAME = "ax_sales_retail_channel"
-    SORT_BY = ["recid"]
     RENAME_COLUMNS = [
         ("password", "password_char"),
         ("partition", "partition_id")
@@ -82,7 +87,6 @@ class RETAILCHANNELTABLE:
     
 class CUSTTABLE:
     LAKEHOUSE_TABLENAME = "ax_custtable"
-    SORT_BY = ["accountnum", "recid"]
     RENAME_COLUMNS = [
         ("partition", "partition_id")
     ]
@@ -91,7 +95,6 @@ class SALESLINE:
     LAKEHOUSE_TABLENAME = "ax_sales_retail_salesline"
     QUERY_KEY = "MODIFIEDDATETIME"
     PARTITION_CLAUSE = "months(`modifieddatetime`)"
-    SORT_BY = ["salesid", "itemid"]
     START_YEAR = 2020
     RENAME_COLUMNS = [
         ("name", "display_name"),
@@ -102,7 +105,6 @@ class RETAILTRANSACTIONSALESTRANS:
     LAKEHOUSE_TABLENAME = "ax_retail_transaction_salestrans"
     QUERY_KEY = "MODIFIEDDATETIME"
     PARTITION_CLAUSE = "months(`modifieddatetime`)"
-    SORT_BY = ["linenum", "itemid"]
     START_YEAR = 2020
     START_MONTH = 1
     RENAME_COLUMNS = [
@@ -116,8 +118,6 @@ class RETAILTRANSACTIONTABLE:
     LAKEHOUSE_TABLENAME = "ax_sales_retail_transaction"
     QUERY_KEY = "MODIFIEDDATETIME"
     PARTITION_CLAUSE = "months(`modifieddatetime`)"
-    SORT_BY = ["invoiceid", "custaccount"]
-    SORT_BY = ["invoiceid", "custaccount"]
     START_YEAR = 2020
     RENAME_COLUMNS = [
         ("type", "type_id"),
@@ -129,14 +129,12 @@ class RETAILTRANSACTIONTABLE:
     
 class DIMENSIONATTRIBUTEVALUESETITEM:
     LAKEHOUSE_TABLENAME = "ax_dimension_attribute_value_set_item"
-    SORT_BY = ["recid"]
     RENAME_COLUMNS = [
         ("partition", "partition_id")
     ]
 
 class DIMENSIONATTRIBUTEVALUE:
     LAKEHOUSE_TABLENAME = "ax_dimension_attribute_value"
-    SORT_BY = ["recid"]
     RENAME_COLUMNS = [
         ("owner", "owner_id"),
         ("partition", "partition_id")

@@ -3,13 +3,13 @@ import time
 import logging
 import re
 from datetime import datetime, timedelta, date
+import calendar
 from pyspark.sql import functions as F
 from pyspark.sql import DataFrame
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 sys.path.append(str(ROOT_DIR))
-JOB_PATH = Path(__file__).resolve().parent
 
 from lib.spark.session import SparkUtil
 from lib.database.mssql_reader import MSSQLReader
@@ -21,9 +21,28 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(na
 logger = logging.getLogger(__name__)
 CRED_PATH = Path(__file__).resolve().parent / ".cred"
 
+# ===================================== Datetime calculator  ========================================
+def get_date_range_strings(start_dt: datetime, end_dt: datetime):
+    """Formats 'YYYY-MM-DD 00:00:00' strings for SQL queries."""
+    
+    start_date_str = start_dt.strftime('%Y%m%d')
+    end_date_str = end_dt.strftime('%Y%m%d')
+        
+    return start_date_str, end_date_str
+# ======================================== Write sql_query  ========================================
+def write_sqlquery(table_name, query_key, start_dt, end_dt):
+    start_date_str, end_date_str = get_date_range_strings(start_dt, end_dt)
+    
+    sql_query = (
+        f"SELECT * FROM {table_name} "
+        f"WHERE {query_key} >= '{start_date_str}' AND {query_key} < '{end_date_str}'"
+    )
+    
+    logger.info("  Processing range: %s to %s ", start_date_str, end_date_str)
+    return sql_query
+
 # ================================= Read data from source database ==================================
 def read_data(spark, mssql_cred: dict, sql_query: str, remove_columns: list, rename_columns: list, add_columns: list, convert_columns: list) -> DataFrame:
-    """Reads data from MSSQL and applies transformations."""
     try:
         
         mssql_reader = MSSQLReader(spark=spark, conf=mssql_cred)
@@ -91,15 +110,11 @@ def run_job(source_table_name: str):
     spark = None
     
     try:
-        logger.info("Initializing Spark session...")
-        spark = SparkUtil.get_spark_session(source_table_name)
-        logger.info("Spark session initialized.")
-
         # Configure mssql_reader
         creds = MSSQLReader.load_credentials(CRED_PATH)
         mssql_cred = {
             "host": creds["MSSQL_HOST"],
-            "port": int(creds.get("MSSQL_PORT", 1433)),
+            "port": int(creds.get("MSSQL_PORT")),
             "username": creds["MSSQL_USERNAME"],
             "password": creds["MSSQL_PASSWORD"],
             "database": creds["MSSQL_DB"]
@@ -110,16 +125,20 @@ def run_job(source_table_name: str):
         load_start_year = getattr(table_config, 'START_YEAR', const.DEFAULT_START_YEAR)
         load_start_month = getattr(table_config, 'START_MONTH', const.DEFAULT_START_MONTH)
         incremental_month = getattr(table_config, "INCREMENTAL_MONTH", const.DEFAULT_INCREMENTAL_MONTH)
+        pull_day = getattr(table_config, "PULL_DAY", const.DEFAULT_PULL_DAY)
+        incremental_day = getattr(table_config, "INCREMENTAL_DAY", const.DEFAULT_INCREMENTAL_DAY)
         partition_clause = getattr(table_config, 'PARTITION_CLAUSE', const.DEFAULT_PARTITION_CLAUSE)
-        rename_columns = getattr(table_config, 'RENAME_COLUMNS', const.DEFAULT_RENAME_COLUMNS)
         remove_columns = getattr(table_config, 'REMOVE_COLUMNS', const.DEFAULT_REMOVE_COLUMNS)
+        rename_columns = getattr(table_config, 'RENAME_COLUMNS', const.DEFAULT_RENAME_COLUMNS)
         add_columns = getattr(table_config, "ADD_COLUMNS", const.DEFAULT_ADD_COLUMNS)
-        query_key = getattr(table_config, "QUERY_KEY", const.DEFAULT_QUERY_KEY)
-        sort_by = getattr(table_config, "SORT_BY", const.DEFAULT_SORT_BY)
         convert_columns = getattr(table_config, "CONVERT_COLUMNS", const.DEFAULT_CONVERT_COLUMNS)
+        query_key = getattr(table_config, "QUERY_KEY", const.DEFAULT_QUERY_KEY)
         
         ICEBERG_TABLE = f"{const.LAKEHOUSE_CATALOG}.{const.LAKEHOUSE_NAMESPACE}.{const.LAKEHOUSE_PREFIX}{getattr(table_config, 'LAKEHOUSE_TABLENAME', source_table_name.split('.')[1].lower())}"
+        SPARK_APP = source_table_name.split('.')[1]
         # ====================================== Get value from the txdb config =================================================
+        logger.info("Initializing Spark session...")
+        spark = SparkUtil.get_spark_session(SPARK_APP, const.LAKEHOUSE_CATALOG, const.NESSIE_BRANCH)
         
         writer = IcebergTable(spark)
         existing_table = spark.catalog.tableExists(ICEBERG_TABLE)
@@ -134,8 +153,7 @@ def run_job(source_table_name: str):
                 writer.create_table(
                     df=df_schema,
                     table_name=ICEBERG_TABLE,
-                    partition_clause=partition_clause,
-                    order_cols=sort_by
+                    partition_clause=partition_clause
                 )
             
             logger.info("Performing full load...")
@@ -163,8 +181,7 @@ def run_job(source_table_name: str):
                 writer.create_table(
                     df=df_schema,
                     table_name=ICEBERG_TABLE,
-                    partition_clause=partition_clause,
-                    order_cols=sort_by
+                    partition_clause=partition_clause
                 )
                 
                 # Get min and max base on query_key
@@ -199,31 +216,32 @@ def run_job(source_table_name: str):
                 df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
                 if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE, mode = 1)
                  
-        else: # Case: Normal Table -> Timestamp as varchar
+        else: # Case: Normal Table -> Timestamp Field
             if not existing_table:
-                # First run: Pulling each month per year
+                # First run: Pulling each year
                 schema_query = f"SELECT TOP 1 * FROM {source_table_name}"
                 df_schema = read_data(spark, mssql_cred, schema_query, remove_columns, rename_columns, add_columns, convert_columns)
                 logger.info("Table does not exist. Performing full load from %s.", load_start_year)
                 writer.create_table(
                     df=df_schema,
                     table_name=ICEBERG_TABLE,
-                    partition_clause=partition_clause,
-                    order_cols=sort_by
+                    partition_clause=partition_clause
                 )
+                
                 if load_start_month is None: # Pull year by year
                     current_year_start = load_start_year
                     current_year_end = date.today().year
                     
                     for year in range(current_year_start, current_year_end + 1):
-                        sql_query = f"SELECT * FROM {source_table_name} WHERE {query_key} LIKE '{year}%'"
+                        sql_query = f"SELECT * FROM {source_table_name} WHERE EXTRACT (YEAR FROM {query_key}) = {year}"
                         logger.info("Processing data for year: %s", year)
                         df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
                         if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE)
                         
                 else: # Pull month by month per year
-                    current_year = date.today().year
-                    current_month = date.today().month
+                    current_date = date.today()
+                    current_year = current_date.year
+                    current_month = current_date.month
 
                     start_month = load_start_month if load_start_month != 0 else 1
 
@@ -237,53 +255,109 @@ def run_job(source_table_name: str):
                             start_month_range = 1
                             
                         for month in range(start_month_range, end_month_range):
-                            month_str = f"{year}{month:02d}"
-                            sql_query = f"SELECT * FROM {source_table_name} WHERE {query_key} LIKE '{month_str}%'"
-                            logger.info("Processing data for year-month: %s-%s", year, month)
+                            if pull_day == "N": 
+                                # Monthly Pull
+                                start_dt = datetime(year, month, 1)
+                                if month == 12:
+                                    end_dt = datetime(year + 1, 1, 1)
+                                else:
+                                    end_dt = datetime(year, month + 1, 1)
 
-                            df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
-                            if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE)
-                
-                logger.info("Finished ingesting data up to the current month of the current year.")
+                                logger.info("Processing monthly full load: %s-%s", year, month)
+                                sql_query = write_sqlquery(source_table_name, query_key, start_dt, end_dt)
+                                
+                                df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
+                                if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE)
+                                
+                            elif pull_day == "Y":
+                                # Daily Pull
+                                num_days = calendar.monthrange(year, month)[1]
+                                logger.info("Processing daily full load: %s-%s (%d total days).", year, month, num_days)
+                                
+                                for day in range(1, num_days + 1):
+                                    start_dt = datetime(year, month, day)
+                                    end_dt = start_dt + timedelta(days=1)
+
+                                    if end_dt.date() > current_date:
+                                        logger.info("  Skipping future date: %s", start_dt.date())
+                                        continue 
+
+                                    sql_query = write_sqlquery(source_table_name, query_key, start_dt, end_dt)
+                                    
+                                    df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
+                                    if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE)
+
+                            else:
+                                logger.error("Invalid value for 'pull_day' in full load mode. Must be 'Y' or 'N'. Aborting month %s-%s.", month, year)
+                                sys.exit(1)
                 
             else: # Schedule: Incremental = current - 1 to current month
                 
-                previous_month_date = date.today().replace(day=1) - timedelta(days=1)
-                start_year = previous_month_date.year
-                start_month = previous_month_date.month
-                end_year = date.today().year
-                end_month = date.today().month
-                
-                if incremental_month - 1 == 0:
-                    if 1 <= date.today().day <= 7:
-                        if start_year != end_year:
-                            sz_last_mon = f"{start_year}{start_month:02d}"
-                            sz_current_mon = f"{end_year}{end_month:02d}"
-                        else:
-                            sz_last_mon = f"{start_year}{start_month:02d}"
-                            sz_current_mon = f"{start_year}{end_month:02d}"
-                            
-                        sql_query = f"SELECT * FROM {source_table_name} WHERE {query_key} LIKE '{sz_last_mon}' OR {query_key} LIKE '{sz_current_mon}%'"
-                        logger.info(f"Table already exists. Performing incremental from month: {sz_last_mon}/{sz_current_mon}")
-                        
-                    else:
-                        sz_current_mon = f"{end_year}{end_month:02d}"
-                        sql_query = f"SELECT * FROM {source_table_name} WHERE {query_key} LIKE '{sz_current_mon}%'"
-                        logger.info(f"Table already exists. Performing incremental from month: {sz_current_mon}")
-                else: 
-                    if start_year != end_year:
-                        sz_last_mon = f"{start_year}{start_month:02d}"
-                        sz_current_mon = f"{end_year}{end_month:02d}"
-                    else:
-                        sz_last_mon = f"{start_year}{start_month:02d}"
-                        sz_current_mon = f"{start_year}{end_month:02d}"
-                        
-                    sql_query = f"SELECT * FROM {source_table_name} WHERE {query_key} LIKE '{sz_last_mon}' OR {query_key} LIKE '{sz_current_mon}%'"
-                    logger.info(f"Table already exists. Performing incremental from month: {sz_last_mon}/{sz_current_mon}")
-                    
-                df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
-                if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE, mode = 1)
+                logger.info("Table exists. Performing Incremental Load.")
 
+                if pull_day == "N": 
+                    # Monthly Incremental
+                    
+                    current_month_start = date.today().replace(day=1)
+                    previous_month_start = current_month_start - timedelta(days=1)
+                    previous_month_start = previous_month_start.replace(day=1)
+                    current_day = date.today().day
+                    end_date_sql = (date.today().replace(day=28) + timedelta(days=4)).replace(day=1)
+                    start_date_sql = None
+                    
+                    if incremental_month == 1:
+                        previous_month_start = current_month_start - timedelta(days=1)
+                        previous_month_start = previous_month_start.replace(day=1)
+
+                        if 1 <= current_day <= 7:
+                            start_date_sql = previous_month_start
+                            logger.info(f"Table exists. Monthly Incremental from Previous Month ({previous_month_start}) up to Current Month")
+                        else:
+                            start_date_sql = current_month_start
+                            logger.info(f"Table exists. Monthly Incremental for Current Month ({current_month_start})")
+                        
+                        sql_query = write_sqlquery(source_table_name, query_key, datetime.combine(start_date_sql, datetime.min.time()), datetime.combine(end_date_sql, datetime.min.time()))
+                        
+                        df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
+                        if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE, mode = 1)
+                              
+                    elif incremental_month > 1:
+                        months_to_go_back = incremental_month - 1
+                        
+                        temp_dt = current_month_start 
+                        
+                        for _ in range(months_to_go_back):
+                            temp_dt = temp_dt - timedelta(days=1)
+                            temp_dt = temp_dt.replace(day=1)
+                        
+                        start_date_sql = temp_dt
+                        logger.info(f"Table exists. Monthly Incremental from {incremental_month} months ago ({start_date_sql}) up to Current Month.")
+                        sql_query = write_sqlquery(source_table_name, query_key, datetime.combine(start_date_sql, datetime.min.time()), datetime.combine(end_date_sql, datetime.min.time()))
+                        
+                        df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
+                        if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE, mode = 1)
+                        
+                    else:
+                        logger.error("Invalid setting: incremental_month must be >=1. Aborting.")
+                        sys.exit(1)
+                        
+                elif pull_day == "Y":
+                    
+                    # Start date: N days ago at 00:00:00
+                    start_date_sql = date.today() - timedelta(days=incremental_day)
+                    # End date: Tomorrow at 00:00:00
+                    end_date_sql = date.today() + timedelta(days=1)
+                    
+                    logger.info(f"Monthly Incremental from {start_date_sql} up to {end_date_sql}")
+                    sql_query = write_sqlquery(source_table_name, query_key, datetime.combine(start_date_sql, datetime.min.time()), datetime.combine(end_date_sql, datetime.min.time()))
+                    
+                    df = read_data(spark, mssql_cred, sql_query, remove_columns, rename_columns, add_columns, convert_columns)
+                    if df.count() > 0: writer.write(df, table_name=ICEBERG_TABLE, mode = 1)
+                    
+                else:
+                    logger.error("Invalid value for 'pull_day' in incremental mode. Must be 'Y' or 'N'. Aborting.")
+                    sys.exit(1)
+                              
         logger.info("Job completed in %.2f seconds.", time.time() - start_time)
         
     except Exception as e:

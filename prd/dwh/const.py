@@ -7,7 +7,9 @@
     5. If START_YEAR = 0 then pulling data base on min and max of the QUERY_KEY, this case need to partition with truncate
     6. If DEFAULT_START_YEAR = None then pulling all the data without QUERY_KEY
     7. If DEFAULT_START_MONTH = None which mean pull year by year - if it's number included zero which mean pull month by month per year starting with START_MONTH (START_MONTH = 0/1 are the same).
-
+    8. If LAKEHOUSE_TABLENAME is not defined then the iceberg table will be used LAKEHOUSE_PREFIX + SOURCE_TABLENAME
+    
+    LAKEHOUSE_TABLENAME = "txfooter_created_by_dremio"
     PARTITION_CLAUSE = "truncate(`recid`, 1000000)" ---- Example: months(`bizdate`), bucket(16, `lretailstoreid`)
     PARTITION_CLAUSE = "truncate(6, `szdate`)"
     PARTITION_CLAUSE = "date(`bizdate`)"
@@ -15,7 +17,6 @@
     PARTITION_CLAUSE = "months(`bizdate`)"
     PARTITION_CLAUSE = "year(`bizdate`)"
     PARTITION_CLAUSE = "szdate"
-    SORT_BY = ["inventtransid", "itemid"]
     
     REMOVE_COLUMNS = ["trxid"]
     
@@ -35,99 +36,112 @@
     INCREMENTAL_MONTH = 2, DEFAULT_INCREMENTAL_MONTH = 1
     START_YEAR = 2020 - START_YEAR = 2024 (Remove this in the Class mean None)
     START_MONTH = 0 - START_MONTH = 1  - START_MONTH = 9 (Remove this in the Class mean None)
+    
+    PULL_DAY = "Y"
+    INCREMENTAL_DAY = 3
+    
 """
 
 
+
 # =============================== Global Declarations ===============================
+NESSIE_BRANCH = "main"
 LAKEHOUSE_CATALOG = "lakehouse_raw"
 LAKEHOUSE_NAMESPACE = "dwh"
 LAKEHOUSE_PREFIX = "r_"
+
 DEFAULT_START_YEAR = None
 DEFAULT_START_MONTH = None
 DEFAULT_INCREMENTAL_MONTH = 1
+DEFAULT_PULL_DAY = "Y"
+DEFAULT_INCREMENTAL_DAY = 1
 DEFAULT_PARTITION_CLAUSE = ""
 DEFAULT_QUERY_KEY = ""
-DEFAULT_SORT_BY = ""
 DEFAULT_REMOVE_COLUMNS = []
 DEFAULT_RENAME_COLUMNS = []
 DEFAULT_ADD_COLUMNS = []
-DEFAULT_REMOVE_COLUMNS = []
+DEFAULT_CONVERT_COLUMNS = []
 # ============================== TXDB-POS ===========================================
 class ADM_LCM_BUDGDAY:
-    SORT_BY = ["adbsite"]
+    QUERY_KEY = ""
 
 class ADM_NETWORK:
-    SORT_BY = ["andcode"]
+    QUERY_KEY = ""
 
 class ADM_NOTCOMP:
-    SORT_BY = ["adcsite"]
+    QUERY_KEY = ""
     
 class ARTICLE:
-    SORT_BY = ["artcexr"]
+    QUERY_KEY = ""
     
 class BI_INF_BDV_BUDGETVERSION:
-    SORT_BY = ["store_cd"]
+    QUERY_KEY = ""
 
 class MV_MERSTRUC:
-    SORT_BY = ["mercode"]
+    QUERY_KEY = ""
 
 class SITEMAPPOS:
-    SORT_BY = ["smpvsite"]
+    QUERY_KEY = ""
     
 class ADM_BUDGDAY:
     QUERY_KEY = "ADBUDPDATE"
     PARTITION_CLAUSE = "months(`adbudpdate`)"
     START_YEAR = 2023
-
+    START_MONTH = 1
 
 """ The below one is being run at 4h30 """
 
 
 class MERCSTR_ALL:
-    SORT_BY = ["mercode"]
+    QUERY_KEY = ""
     
 class MERCSTR:
-    SORT_BY = ["mercode"]
+    QUERY_KEY = ""
 
 class STOCKDAY_ARTICLE:
-    SORT_BY = ["mindmvt"]
+    QUERY_KEY = ""
 
 class RECEYEAR:
-    SORT_BY = ["sysdcre"]
+    QUERY_KEY = ""
 
 class STOCKDAT:
-    SORT_BY = ["stodcre"]
+    QUERY_KEY = ""
    
 class TICKRATLCM:
-    SORT_BY = ["ratdate"]
+    QUERY_KEY = ""
 
 class DATAVLPLCM:
-    SORT_BY = ["create_date"]
+    QUERY_KEY = ""
            
 class TICKRAT:
     QUERY_KEY = "RATDATE"
     PARTITION_CLAUSE = "months(`ratdate`)"
     START_YEAR = 2023
+    START_MONTH = 1
 
 class DATAVLP:
     QUERY_KEY = "VLPDATE"
     PARTITION_CLAUSE = "months(`vlpdate`)"
     START_YEAR = 2023
+    START_MONTH = 1
 
 class SHIPMVT:
     QUERY_KEY = "SYSDCRE"
     PARTITION_CLAUSE = "months(`sysdcre`)"
     START_YEAR = 2023
+    START_MONTH = 1
     
 class RECEMVT:
     QUERY_KEY = "SYSDCRE"
     PARTITION_CLAUSE = "months(`sysdcre`)"
     START_YEAR = 2023
+    START_MONTH = 1
 
 class SALEMVT:
     QUERY_KEY = "SYSDCRE"
     PARTITION_CLAUSE = "months(`sysdcre`)"
     START_YEAR = 2023
+    START_MONTH = 1
       
 # ===================================================================================
 

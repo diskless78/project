@@ -49,10 +49,7 @@ class IcebergTable:
                 catalog_name = full_table_path[0]
                 database_name = full_table_path[1]
                 
-                if catalog_name == "spark_catalog":
-                    self.spark.sql(f"CREATE DATABASE IF NOT EXISTS {database_name}")
-                else:
-                    self.spark.sql(f"CREATE NAMESPACE IF NOT EXISTS {catalog_name}.{database_name}")
+                self.spark.sql(f"CREATE NAMESPACE IF NOT EXISTS {catalog_name}.{database_name}")
                 
                 logger.info("Namespace %s.%s creation completed or already exists.", catalog_name, database_name)
             else:

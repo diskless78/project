@@ -8,6 +8,9 @@
     6. If DEFAULT_START_YEAR = None then pulling all the data without QUERY_KEY
     7. If DEFAULT_START_MONTH = None which mean pull year by year - if it's number included zero which mean pull month by month per year starting with START_MONTH (START_MONTH = 0/1 are the same).
     8. If LAKEHOUSE_TABLENAME is not defined then the iceberg table will be used LAKEHOUSE_PREFIX + SOURCE_TABLENAME
+    9. If PULL_DAY = "Y" then pulling data day by day based on INCREMENTAL_DAY, START_YEAR, START_MONTH and ignore INCREMENTAL_MONTH
+    10. If PULL_DAY = "N" then pulling data month by month based on INCREMENTAL_MONTH, START_YEAR, START_MONTH and ignore INCREMENTAL_DAY
+    
     
     LAKEHOUSE_TABLENAME = "txfooter_created_by_dremio"
     PARTITION_CLAUSE = "truncate(`recid`, 1000000)" ---- Example: months(`bizdate`), bucket(16, `lretailstoreid`)
@@ -44,10 +47,10 @@
 
 
 # =============================== Global Declarations ===============================
-NESSIE_BRANCH = "main"
-LAKEHOUSE_CATALOG = "lakehouse_raw"
-LAKEHOUSE_NAMESPACE = "gold"
-LAKEHOUSE_PREFIX = "r_"
+NESSIE_BRANCH = "audit"
+LAKEHOUSE_CATALOG = "lakehouse_platform"
+LAKEHOUSE_NAMESPACE = "payment_gw"
+LAKEHOUSE_PREFIX = "strapi_"
 
 DEFAULT_START_YEAR = None
 DEFAULT_START_MONTH = None
@@ -61,133 +64,11 @@ DEFAULT_RENAME_COLUMNS = []
 DEFAULT_ADD_COLUMNS = []
 DEFAULT_CONVERT_COLUMNS = []
 # ============================== TXDB-POS ===========================================
-class V_COCA_SITE:
-    QUERY_KEY = "ARCCINR"
-    PARTITION_CLAUSE = "truncate(`arccinr`, 1000000)"
-    SORT_BY = ["arccode"]
-    START_YEAR = 0
-
-class CLIDGENE:
-    QUERY_KEY = ""
-
-class STRUCOBJ:
-    QUERY_KEY = ""
-
-class ARTVL:
-    QUERY_KEY = ""
-         
-class V_COCA_ACTIVE:
-    QUERY_KEY = ""
-
-class SITDGENE:
-    QUERY_KEY = ""
-
-class SITATTRI:
-    QUERY_KEY = ""
-      
-class V_BRAND_SITE:
-    QUERY_KEY = ""
-
-class TRA_PARPOSTES:
-    QUERY_KEY = ""
-
-class STRUCREL:
-    QUERY_KEY = ""
-    
-class RESEAU:
-    QUERY_KEY = ""
-
-class FOUDGENE:
-    QUERY_KEY = ""
-    
-class ARTUVATTRI:
-    QUERY_KEY = ""
-    
-class ARTUVUL:
-    QUERY_KEY = ""
-    
-class ARTCAISSE:
-    QUERY_KEY = "ACADMAJ"
-    PARTITION_CLAUSE = "date(`acadmaj`)"
-    SORT_BY = ["acadmaj"]
-    START_YEAR = 2011
-
-class BLIENTBL:
-    QUERY_KEY = "BLEDMAJ"
-    PARTITION_CLAUSE = "date(`bledmaj`)"
-    SORT_BY = ["bledmaj"]
-    START_YEAR = 2023
-
-class CDEDETCDE:
-    QUERY_KEY = "DCDDMAJ"
-    PARTITION_CLAUSE = "date(`dcddmaj`)"
-    SORT_BY = ["dcddmaj"]
-    START_YEAR = 2023
-
-class CDEDISTRIB:
-    QUERY_KEY = "LCDDMAJ"
-    PARTITION_CLAUSE = "date(`lcddmaj`)"
-    SORT_BY = ["lcddmaj"]
-    START_YEAR = 2023
-
-class TRA_STRUCOBJ:
-    QUERY_KEY = "TSOBDMAJ"
-    PARTITION_CLAUSE = "date(`tsobdmaj`)"
-    SORT_BY = ["tsobcint"]
-    START_YEAR = 2007
-
-class STOMVT:
-    QUERY_KEY = "STMDMAJ"
-    PARTITION_CLAUSE = "date(`stmdmaj`)"
-    SORT_BY = ["stmseq"]
-    START_YEAR = 2023
+class REQUEST_LOGS:
+    QUERY_KEY = "created_at"
+    PARTITION_CLAUSE = "date(`created_at`)"
+    START_YEAR = 2024
     START_MONTH = 1
     PULL_DAY = "Y"
-
-class STODETRE:
-    QUERY_KEY = "SDRDMAJ"
-    PARTITION_CLAUSE = "date(`sdrdmaj`)"
-    START_YEAR = 2023
-
-class STOCOUCH:
-    QUERY_KEY = "STODMAJ"
-    PARTITION_CLAUSE = "date(`stodmaj`)"
-    SORT_BY = ["stoseq"]
-    START_YEAR = 2023
-    START_MONTH = 1
-    PULL_DAY = "Y"
-           
-class CDEENTCDE:
-    QUERY_KEY = "ECDDMAJ"
-    PARTITION_CLAUSE = "date(`ecddmaj`)"
-    SORT_BY = ["ecddmaj"]
-    START_YEAR = 2023
-          
-class AVEPRIX:
-    QUERY_KEY = "AVIDMAJ"
-    PARTITION_CLAUSE = "date(`avidmaj`)"
-    SORT_BY = ["avidmaj"]
-    START_YEAR = 2008
-    
-class ARTCONS:
-    QUERY_KEY = ""
-    
-class ARTUL:
-    QUERY_KEY = ""
-
-class ARTUV:
-    QUERY_KEY = ""
-     
-class ARTRAC:
-    QUERY_KEY = ""
- 
-class AVESCOPE:
-    QUERY_KEY = ""
-    
-class ARTUC:
-    QUERY_KEY = "ARADMAJ"
-    PARTITION_CLAUSE = "date(`aradmaj`)"
-    SORT_BY = ["aradmaj"]
-    START_YEAR = 2011
 # ===================================================================================
 

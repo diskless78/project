@@ -9,11 +9,11 @@ logger.setLevel(logging.INFO)
 
 class SparkUtil:
     @staticmethod
-    def get_spark_session(app_name: str) -> SparkSession:
+    def get_spark_session(app_name: str, catalog_name: str, nessie_branch: str) -> SparkSession:
         logger.info(f"Initializing SparkSession for: {app_name}")
 
         # Spark config map
-        config_map = SparkConfig.get_config_map()
+        config_map = SparkConfig.get_config_map(catalog_name, nessie_branch)
         logger.info("Using Spark Config Map:")
         logger.info(json.dumps(config_map, indent=2))
 
