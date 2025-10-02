@@ -1,5 +1,0 @@
-POSTGRESQL_HOST=pgsql-paymentgw-pgpool.centralretail.com.vn
-POSTGRESQL_DB=strapi-paymentgw
-POSTGRESQL_PORT=9999
-POSTGRESQL_USERNAME=pgpool
-POSTGRESQL_PASSWORD='pgpool'

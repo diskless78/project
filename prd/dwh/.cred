@@ -1,5 +1,0 @@
-ORACLE_HOST=ora-dwhdb-sec.centralretail.com.vn
-ORACLE_DB=DWH
-ORACLE_PORT=1521
-ORACLE_USERNAME=svc_dwhdb_lakehouse
-ORACLE_PASSWORD='xY251f3IjqV4'
