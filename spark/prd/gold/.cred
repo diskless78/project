@@ -1,0 +1,5 @@
+ORACLE_HOST=ora-golddb-sec.centralretail.com.vn
+ORACLE_DB=GOLDDB
+ORACLE_PORT=1521
+ORACLE_USERNAME=svc_goldb_lakehouse
+ORACLE_PASSWORD='aHe58P85oG'

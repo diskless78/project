@@ -1,0 +1,5 @@
+MSSQL_HOST=mssql-axdb-sec.centralretail.com.vn
+MSSQL_DB=DAX63_PROD
+MSSQL_PORT=1433
+MSSQL_USERNAME=DBReadOnly
+MSSQL_PASSWORD='qL4TPPB3#j!3n7rd'

@@ -1,0 +1,84 @@
+SELECT column_name,
+       data_type
+FROM all_tab_columns
+WHERE table_name = 'ARTCAISSE'
+  AND owner = 'GCEN509'
+ORDER BY column_id;
+
+
+SELECT 
+    column_name,
+    data_type,
+    data_length,
+    data_precision,
+    data_scale,
+    nullable,
+    CASE 
+        WHEN column_name IN (
+            SELECT c.column_name
+            FROM all_cons_columns c
+            JOIN all_constraints cc
+                ON c.constraint_name = cc.constraint_name
+                AND c.owner = cc.owner
+            WHERE cc.constraint_type = 'P'
+              AND cc.table_name = 'STOCOUCH'
+              AND cc.owner = 'GCEN509'
+        ) THEN 'YES'
+        ELSE 'NO'
+    END AS primary_key
+FROM all_tab_columns
+WHERE table_name = 'STOCOUCH'
+  AND owner = 'GCEN509'
+ORDER BY column_id;
+
+
+SELECT COUNT(*)
+FROM STOMVT
+WHERE STMSEQ BETWEEN 1454783829 AND 1963151866;
+
+SELECT 
+	MIN(STMSEQ) AS Min_Value,
+    MAX(STMSEQ) AS MAX_Value
+FROM STOMVT
+WHERE EXTRACT (YEAR FROM stmdmaj) >= 2023 AND EXTRACT(YEAR FROM stmdmaj) <= 2025;
+
+SELECT COUNT(*)
+FROM STOMVT
+WHERE STMSEQ BETWEEN 1454783829 AND 1963059508;
+
+read MIN_ARCSITE MAX_ARCSITE <<<$(sqlplus -s "${ORACLE_USERNAME}/${ORACLE_PASSWORD}@${ORACLE_HOST}:${ORACLE_PORT}/${ORACLE_DB}" <<EOF
+SET HEADING OFF FEEDBACK OFF VERIFY OFF ECHO OFF PAGESIZE 0 TRIMSPOOL ON LINESIZE 1000
+SELECT MIN(ARCSITE), MAX(ARCSITE)
+FROM ${ORACLE_SCHEMA}.V_COCA_SITE;
+EXIT;
+EOF
+
+min_arcsite=$(sqlplus -s "${ORACLE_USERNAME}/${ORACLE_PASSWORD}@${ORACLE_HOST}:${ORACLE_PORT}/${ORACLE_DB}" <<EOF
+SET HEADING OFF FEEDBACK OFF VERIFY OFF ECHO OFF PAGESIZE 0 TRIMSPOOL ON LINESIZE 1000
+SELECT TRIM(TO_CHAR(MIN(ARCSITE))) FROM ${ORACLE_SCHEMA}.V_COCA_SITE;
+EXIT;
+EOF
+)
+
+max_arcsite=$(sqlplus -s "${ORACLE_USERNAME}/${ORACLE_PASSWORD}@${ORACLE_HOST}:${ORACLE_PORT}/${ORACLE_DB}" <<EOF
+SET HEADING OFF FEEDBACK OFF VERIFY OFF ECHO OFF PAGESIZE 0 TRIMSPOOL ON LINESIZE 1000
+SELECT TRIM(TO_CHAR(MAX(ARCSITE))) FROM ${ORACLE_SCHEMA}.V_COCA_SITE;
+EXIT;
+EOF
+)
+
+
+SELECT DCDCINCDE, DCDDMAJ
+FROM (
+    SELECT DCDCINCDE,
+           DCDDMAJ,
+           ROW_NUMBER() OVER (ORDER BY DCDDMAJ DESC) AS rn
+    FROM GCEN509.CDEDETCDE
+) t
+WHERE rn = 1;
+
+
+SELECT MAX(DCDDMAJ) KEEP (DENSE_RANK LAST ORDER BY DCDCINCDE) AS DCDDMAJ_AT_MAX,
+       MAX(DCDCINCDE) AS MAX_KEY
+FROM GCEN509.CDEDETCDE
+WHERE EXTRACT(YEAR FROM DCDDMAJ) = 2025;
