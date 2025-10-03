@@ -75,7 +75,8 @@ class IcebergTable:
             "gc.enabled": "true",
             "write.target-file-size-bytes": "536870912",
             "write.parquet.row-group-size-bytes": "134217728",
-            "write.metadata.delete-after-commit.enabled": "true"
+            "write.metadata.delete-after-commit.enabled": "true",
+            "write.metadata.previous-versions-max": "5"
         }
 
         if order_cols:

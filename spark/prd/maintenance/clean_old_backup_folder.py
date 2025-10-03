@@ -5,7 +5,7 @@ import smtplib
 from email.message import EmailMessage
 
 # === Configuration ===
-LAKEHOUSE_ZONES = ["lakehouse_platform", "lakehouse_raw", "lakehouse_refined", "lakehouse_structured"]
+LAKEHOUSE_ZONES = ["lakehouse_archive", "lakehouse_raw", "lakehouse_refined", "lakehouse_structured"]
 
 PROD_ORPHANED_TABLES = "/orphaned_backup"
 days_threshold = 7

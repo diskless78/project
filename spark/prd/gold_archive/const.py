@@ -68,7 +68,7 @@ DEFAULT_INCREMENTAL_MONTH = 1
 DEFAULT_FULL_PER_DAY = "N"
 
 DEFAUL_INCREMENTAL_PER_DAY =  "Y"
-DEFAULT_INCREMENTAL_DAY = 7
+DEFAULT_INCREMENTAL_DAY = 3
 
 DEFAULT_PARTITION_CLAUSE = ""
 DEFAULT_QUERY_KEY = ""
@@ -123,167 +123,167 @@ class INVSUIVI:
 class STOMVSEMAINE:   # 1,5 billion rows
     QUERY_KEY = "SMSDMAJ"
     PARTITION_CLAUSE = "date(`smsdmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2010
+    START_MONTH = 5
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"
     
 class ARTUC:
     QUERY_KEY = "ARADMAJ"
     PARTITION_CLAUSE = "date(`aradmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2008
+    START_MONTH = 6
     INCREMENTAL_PER_DAY = "Y"
 
 class TARPRIX:
     QUERY_KEY = "TAPDMAJ"
     PARTITION_CLAUSE = "date(`tapdmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 208
+    START_MONTH = 6
     INCREMENTAL_PER_DAY = "Y"
 
 class TAREMISE:
     QUERY_KEY = "TREDMAJ"
     PARTITION_CLAUSE = "date(`tredmaj`)"
-    START_YEAR = 2000
+    START_YEAR = 2025
     START_MONTH = 1
     INCREMENTAL_PER_DAY = "Y"
 
 class TAREXAR:
     QUERY_KEY = "TRXDMAJ"
     PARTITION_CLAUSE = "date(`trxdmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2015
+    START_MONTH = 4
     INCREMENTAL_PER_DAY = "Y"
     
 class TARGRAR:
     QUERY_KEY = "TGADMAJ"
     PARTITION_CLAUSE = "date(`tgadmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2007
+    START_MONTH = 11
     INCREMENTAL_PER_DAY = "Y"
 
 class TARGRAT:
     QUERY_KEY = "TGRDMAJ"
     PARTITION_CLAUSE = "date(`tgrdmaj`)"
-    START_YEAR = 2000
+    START_YEAR = 2022
     START_MONTH = 1
     INCREMENTAL_PER_DAY = "Y"
     
 class TARINCO:
     QUERY_KEY = "TICDMAJ"
     PARTITION_CLAUSE = "date(`ticdmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2015
+    START_MONTH = 3
     INCREMENTAL_PER_DAY = "Y"
     
 class TARGRUL:
     QUERY_KEY = "TGUDMAJ"
     PARTITION_CLAUSE = "date(`tgudmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2007
+    START_MONTH = 11
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"
     
 class AVEPRIX:
     QUERY_KEY = "AVIDMAJ"
     PARTITION_CLAUSE = "date(`avidmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2008
+    START_MONTH = 2
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"
 
 class RAOVENTTHEO:
     QUERY_KEY = "RVTDMAJ"
     PARTITION_CLAUSE = "date(`rvtdmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2024
+    START_MONTH = 5
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"
     
 class RAOPARAM:
     QUERY_KEY = "RPADMAJ"
     PARTITION_CLAUSE = "date(`rpadmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2016
+    START_MONTH = 8
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"
 
 class ARTPERIODE:
     QUERY_KEY = "ARPDMAJ"
     PARTITION_CLAUSE = "date(`arpdmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2014
+    START_MONTH = 3
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"
  
 class STODETRE:
     QUERY_KEY = "SDRDMAJ"
     PARTITION_CLAUSE = "date(`sdrdmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2010
+    START_MONTH = 5
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"
       
 class STOENTRE:
     QUERY_KEY = "SERDMAJ"
     PARTITION_CLAUSE = "date(`serdmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2010
+    START_MONTH = 5
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"
 
 class STOPIERE:
     QUERY_KEY = "SPRDMAJ"
     PARTITION_CLAUSE = "date(`sprdmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2010
+    START_MONTH = 5
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"    
 
 class STOREMRE:
     QUERY_KEY = "SRRDMAJ"
     PARTITION_CLAUSE = "date(`srrdmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2015
+    START_MONTH = 5
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"            
 
 class CDEDETRE:
     QUERY_KEY = "CDRDMAJ"
     PARTITION_CLAUSE = "date(`cdrdmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2014
+    START_MONTH = 4
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"     
 
 class STOMAVOY:
     QUERY_KEY = "SMVDMAJ"
     PARTITION_CLAUSE = "date(`smvdmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2017
+    START_MONTH = 9
     INCREMENTAL_PER_DAY = "Y"
 
 class STOMVT:
     QUERY_KEY = "STMDMAJ"
     PARTITION_CLAUSE = "date(`stmdmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2010
+    START_MONTH = 5
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"
     
 class STODEPR:
     QUERY_KEY = "SDRDATE"
     PARTITION_CLAUSE = "date(`sdrdate`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2007
+    START_MONTH = 12
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"
 
 class STODEPV:
     QUERY_KEY = "SDVDDEM"
     PARTITION_CLAUSE = "date(`sdvddem`)"
-    START_YEAR = 2000
+    START_YEAR = 2008
     START_MONTH = 1
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y" 
@@ -291,7 +291,7 @@ class STODEPV:
 class STODEPA:
     QUERY_KEY = "SDADATE"
     PARTITION_CLAUSE = "date(`sdadate`)"
-    START_YEAR = 2000
+    START_YEAR = 2014
     START_MONTH = 1
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y" 
@@ -299,48 +299,48 @@ class STODEPA:
 class CNSMVTERR:
     QUERY_KEY = "CMEDMAJ"
     PARTITION_CLAUSE = "date(`cmedmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2017
+    START_MONTH = 12
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"
 
 class INVDETINV:
     QUERY_KEY = "DINDMAJ"
     PARTITION_CLAUSE = "date(`dindmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2013
+    START_MONTH = 3
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y" 
 
 class INVSAISIE:
     QUERY_KEY = "ISADMAJ"
     PARTITION_CLAUSE = "date(`isadmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2009
+    START_MONTH = 9
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y" 
 
 class STOMVPERIODE:
     QUERY_KEY = "SMPDMAJ"
     PARTITION_CLAUSE = "date(`smpdmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2022
+    START_MONTH = 8
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"
 
 class STOMVMOIS:
     QUERY_KEY = "SMMDMAJ"
     PARTITION_CLAUSE = "date(`smmdmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2010
+    START_MONTH = 5
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y"
 
 class VTEREMART:
     QUERY_KEY = "VTADMAJ"
     PARTITION_CLAUSE = "date(`vtadmaj`)"
-    START_YEAR = 2000
-    START_MONTH = 1
+    START_YEAR = 2016
+    START_MONTH = 12
     INCREMENTAL_PER_DAY = "Y"
     FULL_PER_DAY = "Y" 
 # ===================================================================================

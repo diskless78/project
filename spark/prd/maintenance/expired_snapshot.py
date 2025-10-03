@@ -82,32 +82,103 @@ def get_all_namespaces(spark, catalog):
     except Exception as e:
         print(f"[ERROR] Failed to fetch namespaces for {catalog['name']}: {e}")
         return []
+# === check and set table properties ===
+def set_table_properties(spark, full_table: str, required_props: dict):
+    """
+    Check Iceberg table properties and only set the ones that are missing.
+    """
+    try:
+        # Get all current properties
+        props_df = spark.sql(f"SHOW TBLPROPERTIES {full_table}")
+        current_props = {row['key']: row['value'] for row in props_df.collect()}
+
+        # Filter properties that need to be updated
+        updates = {
+            k: v for k, v in required_props.items()
+            if k not in current_props or str(current_props[k]) != str(v)
+        }
+
+        if updates:
+            props_sql = ",\n    ".join([f"'{k}'='{v}'" for k, v in updates.items()])
+            alter_sql = f"ALTER TABLE {full_table} SET TBLPROPERTIES ({props_sql})"
+            spark.sql(alter_sql)
+            print(f"[INFO] Updated {len(updates)} properties on {full_table}: {updates}")
+        else:
+            print(f"[INFO] All required properties already set on {full_table}")
+
+    except Exception as e:
+        print(f"[ERROR] Failed to check/alter properties for {full_table}: {e}")
+
 
 # === Expire snapshots for table ===
 def expire_snapshot_for_table(spark, catalog_name, namespace, table_name):
+    """
+        lakehouse_refined, lakehouse_structured: retain last 3 snapshots
+        lakehouse_raw, lakehouse_archive: expire everything older than latest
+    """
     full_table = f"{catalog_name}.{namespace}.{table_name}"
+
+    # Required Iceberg properties
+    required_props = {
+        "gc.enabled": "true",
+        "write.target-file-size-bytes": "536870912",
+        "write.parquet.row-group-size-bytes": "134217728",
+        "write.metadata.delete-after-commit.enabled": "true",
+        "write.metadata.previous-versions-max": "5"
+    }
+    set_table_properties(spark, full_table, required_props)
+
+    RETAIN_LAST_CATALOGS = {"lakehouse_refined", "lakehouse_structured"}
+
     try:
-        latest_ts_df = spark.sql(f"""
-            SELECT committed_at
-            FROM {full_table}.snapshots
-            ORDER BY committed_at DESC
-            LIMIT 1
-        """)
-        rows = latest_ts_df.collect()
-        if not rows:
-            print(f"[INFO] No snapshots found for {full_table}")
+        # Count snapshot
+        snapshot_count = spark.sql(f"SELECT COUNT(*) as c FROM {full_table}.snapshots").collect()[0]['c']
+        if snapshot_count == 0:
+            print(f"[INFO] No snapshots found for {full_table}. Skipping rewrite and expire.")
             return None
 
-        latest_ts = rows[0]['committed_at']
-
-        spark.sql(f"""
-            CALL {catalog_name}.system.expire_snapshots(
-                table => '{namespace}.{table_name}',
-                older_than => TIMESTAMP '{latest_ts}'
+        # Rewrite manifests
+        rewrite_sql = f"""
+            CALL {catalog_name}.system.rewrite_manifests(
+                table => '{namespace}.{table_name}'
             )
-        """)
-        print(f"[INFO] Expired snapshots older than {latest_ts} for {full_table}")
-        return str(latest_ts)
+        """
+        spark.sql(rewrite_sql)
+        print(f"[INFO] Rewrote manifests for {full_table} before expiring snapshots.")
+
+        if catalog_name in RETAIN_LAST_CATALOGS:
+            # Retain last 3 snapshots
+            call_sql = f"""
+                CALL {catalog_name}.system.expire_snapshots(
+                    table => '{namespace}.{table_name}',
+                    retain_last => 3
+                )
+            """
+            print(f"[INFO] Applying 'retain_last=3' policy for {full_table} in {catalog_name}.")
+            spark.sql(call_sql)
+            print(f"[INFO] Expired old snapshots for {full_table}, retaining the last 3.")
+            return "Retained last 3 snapshots"
+
+        else:
+            # Expire everything older than latest
+            latest_ts_df = spark.sql(f"""
+                SELECT committed_at
+                FROM {full_table}.snapshots
+                ORDER BY committed_at DESC
+                LIMIT 1
+            """)
+            latest_ts = latest_ts_df.collect()[0]['committed_at']
+
+            call_sql = f"""
+                CALL {catalog_name}.system.expire_snapshots(
+                    table => '{namespace}.{table_name}',
+                    older_than => TIMESTAMP '{latest_ts}'
+                )
+            """
+            spark.sql(call_sql)
+            print(f"[INFO] Expired snapshots older than {latest_ts} for {full_table} in {catalog_name}.")
+            return str(latest_ts)
+
     except Exception as e:
         print(f"[ERROR] Failed to expire snapshots for {full_table}: {e}")
         return None
