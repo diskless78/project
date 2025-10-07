@@ -1,0 +1,122 @@
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.exe
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.dll.config
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.deps.json
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.runtimeconfig.json
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.dll
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.pdb
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Change_Password.resources
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Main.resources
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Vacation.resources
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.csproj.GenerateResource.cache
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.GeneratedMSBuildEditorConfig.editorconfig
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.AssemblyInfoInputs.cache
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.AssemblyInfo.cs
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.csproj.CoreCompileInputs.cache
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.dll
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\refint\mtv-client.dll
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.pdb
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.genruntimeconfig.cache
+C:\Source\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\ref\mtv-client.dll
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Change_Password.resources
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Main.resources
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Vacation.resources
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.csproj.GenerateResource.cache
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.AssemblyInfoInputs.cache
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.AssemblyInfo.cs
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.csproj.CoreCompileInputs.cache
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.exe
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.dll.config
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.deps.json
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.runtimeconfig.json
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.dll
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.pdb
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.dll
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\refint\mtv-client.dll
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.pdb
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.genruntimeconfig.cache
+C:\Users\adm.thanhdc\Desktop\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\ref\mtv-client.dll
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.exe
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.dll.config
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.deps.json
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.runtimeconfig.json
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.dll
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.pdb
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Change_Password.resources
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Main.resources
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.UpdateAccount.resources
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Vacation.resources
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.csproj.GenerateResource.cache
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.AssemblyInfoInputs.cache
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.AssemblyInfo.cs
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.csproj.CoreCompileInputs.cache
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.sourcelink.json
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.dll
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\refint\mtv-client.dll
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.pdb
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.genruntimeconfig.cache
+C:\Users\adm.thanhdc\DevOps\c#\Find The Luck\Find The Luck\Find The Luck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\ref\mtv-client.dll
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.exe
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.dll.config
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.deps.json
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.runtimeconfig.json
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.dll
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.pdb
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Change_Password.resources
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Main.resources
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.UpdateAccount.resources
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Vacation.resources
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.csproj.GenerateResource.cache
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.AssemblyInfoInputs.cache
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.AssemblyInfo.cs
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.csproj.CoreCompileInputs.cache
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.sourcelink.json
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.dll
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\refint\mtv-client.dll
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.pdb
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.genruntimeconfig.cache
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\Main\mtv-client\mtv-client\obj\Release\net8.0-windows\ref\mtv-client.dll
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.exe
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.dll.config
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.deps.json
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.runtimeconfig.json
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.dll
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.pdb
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Change_Password.resources
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Main.resources
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.UpdateAccount.resources
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Vacation.resources
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.csproj.GenerateResource.cache
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.AssemblyInfoInputs.cache
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.AssemblyInfo.cs
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.csproj.CoreCompileInputs.cache
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.sourcelink.json
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.dll
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\obj\Release\net8.0-windows\refint\mtv-client.dll
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.pdb
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.genruntimeconfig.cache
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\V2\mtv-client\mtv-client\obj\Release\net8.0-windows\ref\mtv-client.dll
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.exe
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.dll.config
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.deps.json
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.runtimeconfig.json
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.dll
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\bin\Release\net8.0-windows\mtv-client.pdb
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Change_Password.resources
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Main.resources
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.UpdateAccount.resources
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv_client.Vacation.resources
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.csproj.GenerateResource.cache
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.AssemblyInfoInputs.cache
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.AssemblyInfo.cs
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.csproj.CoreCompileInputs.cache
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.sourcelink.json
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.dll
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\obj\Release\net8.0-windows\refint\mtv-client.dll
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.pdb
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\obj\Release\net8.0-windows\mtv-client.genruntimeconfig.cache
+C:\Users\adm.thanhdc\AppData\Local\FindTheLuck\mtv-client\mtv-client\obj\Release\net8.0-windows\ref\mtv-client.dll

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>mtv</id>
+    <version>1.0.0</version>
+    <authors>mtv</authors>
+    <description>Package Description</description>
+    <repository type="git" commit="06b616929504035685cd6105f8b1cd12ea9eae6e" />
+    <dependencies>
+      <group targetFramework="net8.0-windows7.0">
+        <dependency id="DotNetSeleniumExtras.WaitHelpers" version="3.11.0" exclude="Build,Analyzers" />
+        <dependency id="Selenium.WebDriver" version="4.19.0" exclude="Build,Analyzers" />
+        <dependency id="SeleniumExtras.WaitHelpers" version="1.0.2" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <frameworkReferences>
+      <group targetFramework="net8.0-windows7.0">
+        <frameworkReference name="Microsoft.WindowsDesktop.App.WindowsForms" />
+      </group>
+    </frameworkReferences>
+  </metadata>
+  <files>
+    <file src="C:\Users\adm.thanhdc\Desktop\Marcus\mtv\mtv\bin\Debug\net8.0-windows\mtv.runtimeconfig.json" target="lib\net8.0-windows7.0\mtv.runtimeconfig.json" />
+    <file src="C:\Users\adm.thanhdc\Desktop\Marcus\mtv\mtv\bin\Debug\net8.0-windows\mtv.dll" target="lib\net8.0-windows7.0\mtv.dll" />
+  </files>
+</package>

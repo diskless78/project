@@ -1,0 +1,11 @@
+C:\Users\adm.thanhdc\Desktop\Publishing\mtv\mtv.exe
+C:\Users\adm.thanhdc\Desktop\Publishing\mtv\selenium-manager\linux\selenium-manager
+C:\Users\adm.thanhdc\Desktop\Publishing\mtv\selenium-manager\macos\selenium-manager
+C:\Users\adm.thanhdc\Desktop\Publishing\mtv\selenium-manager\windows\selenium-manager.exe
+C:\Users\adm.thanhdc\Desktop\Publishing\mtv\mtv.dll
+C:\Users\adm.thanhdc\Desktop\Publishing\mtv\mtv.deps.json
+C:\Users\adm.thanhdc\Desktop\Publishing\mtv\mtv.runtimeconfig.json
+C:\Users\adm.thanhdc\Desktop\Publishing\mtv\mtv.pdb
+C:\Users\adm.thanhdc\Desktop\Publishing\mtv\SeleniumExtras.WaitHelpers.dll
+C:\Users\adm.thanhdc\Desktop\Publishing\mtv\Newtonsoft.Json.dll
+C:\Users\adm.thanhdc\Desktop\Publishing\mtv\WebDriver.dll
