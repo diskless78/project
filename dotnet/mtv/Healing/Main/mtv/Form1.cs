@@ -17,7 +17,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace mtv
 {
-    
+
     public partial class Form1 : Form
     {
         private static bool isVacationListenerRunning = false;
@@ -39,7 +39,7 @@ namespace mtv
         private bool notifyBeforeCheckIn = false;
         private bool notifyBeforeCheckOut = false;
         private bool notifyDaily = false;
-        private bool checkSessionExiredDone = false;
+        private bool checkSessionExiredDone = false; // Set = True for testing
         private FileSystemWatcher? watcher;
         public BookTime bookTime = new BookTime();
         public Holidays publicHoliday = new Holidays();
@@ -478,12 +478,7 @@ namespace mtv
 
                     if (!string.IsNullOrEmpty(employee.personName) && !string.IsNullOrEmpty(employee.sessionID))
                     {
-                        string userName = employee.personName.Split('@')[0].Replace(".", "");
-                        string userProfile = Path.Combine(configSettings.ChromeProfiles, userName);
-                        int userPort = employee.chromePort;
-                        string telegramNickName = employee.telegramID;
-                        var (loginStatus, sessionId, driver) = await FuckTheLifeToFindTheLuck.CRVLogin(userProfile, userPort);
-
+                        var (loginStatus, sessionId, driver) = await FuckTheLifeToFindTheLuck.CRVLogin(employee.personName, string.Empty, employee.chromePort, false, false, 0);
                         if (!string.IsNullOrEmpty(sessionId))
                         {
                             employee.sessionID = sessionId;
@@ -495,7 +490,7 @@ namespace mtv
                             employee.sessionID = string.Empty;
                             employees[i] = employee;
 
-                            await telegramBotService.SendMsgTelegram(false, Directory.GetCurrentDirectory() + @"\SessionExpired.png", userName, "Your session is expired, pls login again !", telegramNickName);
+                            await telegramBotService.SendMsgTelegram(false, Directory.GetCurrentDirectory() + @"\SessionExpired.png", employee.personName.Split('@')[0].Replace(".", ""), "Your session is expired, pls login again !", employee.telegramID);
                         }
                         driver?.Quit();
                         await Task.Delay(TimeSpan.FromSeconds(30));
@@ -856,7 +851,7 @@ namespace mtv
             checkout_EndTime.Text = selectedTime.ToString("hh:mm tt");
         }
 
-        private void SaveAllRowsToFile()
+        public void SaveAllRowsToFile()
         {
             List<Employee> employees = new List<Employee>();
 
@@ -892,7 +887,7 @@ namespace mtv
 
         private async void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            
+
             if (e.RowIndex < 0 || e.ColumnIndex < 0)
                 return;
 
@@ -911,15 +906,13 @@ namespace mtv
                     userPort = parsedPort;
                 }
 
-                string userName = emailAddress.Split('@')[0].Replace(".", "");
-                string userProfile = Path.Combine(configSettings.ChromeProfiles, userName);
-                    MessageBox.Show(
-                    "When Chrome is opened, please wait for 10 seconds to set up the profile. Then the login page will load automatically. You need to enter the credentials manually.",
-                    "Information",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-                var (loginStatus, sessionId, driver) = await FuckTheLifeToFindTheLuck.CRVLogin(userProfile, userPort);
+                MessageBox.Show(
+                "When Chrome is opened, please wait for 10 seconds to set up the profile. Then the login page will load automatically. You need to enter the credentials manually.",
+                "Information",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+                var (loginStatus, sessionId, driver) = await FuckTheLifeToFindTheLuck.CRVLogin(emailAddress, string.Empty, userPort, true, false, 0);
 
                 if (!string.IsNullOrEmpty(sessionId))
                 {
@@ -1134,5 +1127,88 @@ namespace mtv
                 }
             }
         }
+
+        private void cmd_Creds_Click(object sender, EventArgs e)
+        {
+            for (int i = dataGridView1.Rows.Count - 1; i >= 0; i--)
+            {
+                DataGridViewRow row = dataGridView1.Rows[i];
+                if (row.IsNewRow) continue;
+
+                bool isChecked = Convert.ToBoolean(row.Cells["confirmSelected"].Value);
+                if (isChecked)
+                {
+                    string emailAddress = row.Cells["EmailAddress"].Value?.ToString() ?? "";
+                    string accountFileName = Path.Combine(AppConst.personCred, emailAddress.Trim().ToLower().Split('@')[0]);
+
+                    // Create a new form
+                    Form prompt = new Form()
+                    {
+                        Width = 400,
+                        Height = 250,
+                        FormBorderStyle = FormBorderStyle.FixedDialog,
+                        Text = $"Set Password for {emailAddress}",
+                        StartPosition = FormStartPosition.CenterScreen
+                    };
+
+                    // Labels
+                    Label lblPassword = new Label() { Left = 20, Top = 20, Text = "Enter Password:", AutoSize = true };
+                    Label lblConfirm = new Label() { Left = 20, Top = 80, Text = "Confirm Password:", AutoSize = true };
+
+                    // Textboxes
+                    System.Windows.Forms.TextBox txtPassword = new System.Windows.Forms.TextBox() { Left = 20, Top = 45, Width = 340, PasswordChar = '*' };
+                    System.Windows.Forms.TextBox txtConfirm = new System.Windows.Forms.TextBox() { Left = 20, Top = 105, Width = 340, PasswordChar = '*' };
+
+                    // Buttons
+                    System.Windows.Forms.Button btnOK = new System.Windows.Forms.Button() { Text = "OK", Left = 90, Width = 100, Top = 160, DialogResult = DialogResult.OK };
+                    System.Windows.Forms.Button btnCancel = new System.Windows.Forms.Button() { Text = "Cancel", Left = 210, Width = 100, Top = 160, DialogResult = DialogResult.Cancel };
+
+                    prompt.Controls.Add(lblPassword);
+                    prompt.Controls.Add(lblConfirm);
+                    prompt.Controls.Add(txtPassword);
+                    prompt.Controls.Add(txtConfirm);
+                    prompt.Controls.Add(btnOK);
+                    prompt.Controls.Add(btnCancel);
+
+                    prompt.AcceptButton = btnOK;
+                    prompt.CancelButton = btnCancel;
+
+                    // Show dialog and handle input
+                    if (prompt.ShowDialog() == DialogResult.OK)
+                    {
+                        string password = txtPassword.Text;
+                        string confirm = txtConfirm.Text;
+
+                        if (string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirm))
+                        {
+                            MessageBox.Show("Please fill in both password fields.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            i++;
+                            continue;
+                        }
+
+                        if (password != confirm)
+                        {
+                            MessageBox.Show("Passwords do not match.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            i++; // recheck same row
+                            continue;
+                        }
+
+                        // ✅ Password confirmed
+                        MessageBox.Show($"Password set for: {emailAddress}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Save the Info which has emailaddres + password
+
+                        Person person = new Person();
+                        person.accountEmail = emailAddress;
+                        person.accountPassword = password;
+                        FuckTheLifeToFindTheLuck.SaveLoginCred(accountFileName, person);
+
+                    }
+
+                    prompt.Dispose();
+                    LoadDataAndConfiguration();
+                }
+            }
+        }
+
     }
 }

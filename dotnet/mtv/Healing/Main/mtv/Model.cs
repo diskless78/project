@@ -27,6 +27,18 @@ namespace mtv
         }
     }
 
+    public struct Person
+    {
+        public string accountEmail;
+        public string accountPassword;
+
+        public Person(string emailAccount, string passwordAccount)
+        {
+            accountEmail = emailAccount;
+            accountPassword = passwordAccount;
+        }
+    }
+
     public class TelegramChat
     {
         public long Id { get; set; }
@@ -101,11 +113,11 @@ namespace mtv
         // openssl rand -hex 16
         public const string encryptKey = "a0e51106cafe3073f9dd7ab7f7cef7ea";
         // wmic csproduct get UUID
-        
-        public const string SeeMe = "DB480A42-5B0B-169E-31E3-E541EBD7E959";
+
+        //public const string SeeMe = "DB480A42-5B0B-169E-31E3-E541EBD7E959";
         //===================================================== Below is server ======================================
-        //public const string SeeMe = "45882442-4580-A550-8EAE-50FD0A55C78F";
-        
+        public const string SeeMe = "45882442-4580-A550-8EAE-50FD0A55C78F";
+
         public const int MilliSecondPerMinute = 60000;
         public const string amTime = "AM";
         public const string pmTime = "PM";
@@ -113,6 +125,7 @@ namespace mtv
         public const string timerFile = "timer.json";
         public static readonly string findtheluckLogDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Logs");
         public static string vacationFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Vacation");
+        public static string personCred = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "person_Creds");
         public static readonly string morningImageFolder = Path.Combine(Directory.GetCurrentDirectory(), "AMImage");
         public static readonly string eveningImageFolder = Path.Combine(Directory.GetCurrentDirectory(), "PMImage");
         public static readonly string findtheluckLogFile = Path.Combine(findtheluckLogDirectory,"findtheluck-log-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log");

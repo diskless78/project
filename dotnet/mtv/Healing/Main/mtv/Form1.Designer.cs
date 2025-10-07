@@ -32,7 +32,6 @@
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle13 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle14 = new DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
@@ -44,9 +43,21 @@
             DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             start_Button = new Button();
             quit_Button = new Button();
             dataGridView1 = new DataGridView();
+            ID = new DataGridViewTextBoxColumn();
+            EmailAddress = new DataGridViewTextBoxColumn();
+            SessionID = new DataGridViewTextBoxColumn();
+            TelegramNickName = new DataGridViewTextBoxColumn();
+            chromePort = new DataGridViewTextBoxColumn();
+            OffAM = new DataGridViewCheckBoxColumn();
+            OffPM = new DataGridViewCheckBoxColumn();
+            Weekend = new DataGridViewCheckBoxColumn();
+            PublicHolidays = new DataGridViewCheckBoxColumn();
+            confirmSelected = new DataGridViewCheckBoxColumn();
+            cmd_Login = new DataGridViewButtonColumn();
             delete_Button = new Button();
             notifyIcon1 = new NotifyIcon(components);
             timer_MTV = new System.Windows.Forms.Timer(components);
@@ -72,17 +83,7 @@
             groupBox3 = new GroupBox();
             cmd_saveData = new Button();
             cmd_Vacation = new Button();
-            ID = new DataGridViewTextBoxColumn();
-            EmailAddress = new DataGridViewTextBoxColumn();
-            SessionID = new DataGridViewTextBoxColumn();
-            TelegramNickName = new DataGridViewTextBoxColumn();
-            chromePort = new DataGridViewTextBoxColumn();
-            OffAM = new DataGridViewCheckBoxColumn();
-            OffPM = new DataGridViewCheckBoxColumn();
-            Weekend = new DataGridViewCheckBoxColumn();
-            PublicHolidays = new DataGridViewCheckBoxColumn();
-            confirmSelected = new DataGridViewCheckBoxColumn();
-            cmd_Login = new DataGridViewButtonColumn();
+            cmd_Creds = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             group_checkin.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -156,6 +157,161 @@
             dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
             dataGridView1.CurrentCellDirtyStateChanged += dataGridView1_CurrentCellDirtyStateChanged;
             dataGridView1.MouseLeave += dataGridView1_MouseLeave;
+            // 
+            // ID
+            // 
+            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = Color.Black;
+            ID.DefaultCellStyle = dataGridViewCellStyle2;
+            ID.FillWeight = 63.4517822F;
+            ID.HeaderText = "Id";
+            ID.MinimumWidth = 10;
+            ID.Name = "ID";
+            ID.Resizable = DataGridViewTriState.True;
+            ID.Width = 42;
+            // 
+            // EmailAddress
+            // 
+            EmailAddress.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = Color.Black;
+            EmailAddress.DefaultCellStyle = dataGridViewCellStyle3;
+            EmailAddress.FillWeight = 226.009186F;
+            EmailAddress.HeaderText = "Email Address";
+            EmailAddress.MinimumWidth = 10;
+            EmailAddress.Name = "EmailAddress";
+            EmailAddress.Resizable = DataGridViewTriState.False;
+            EmailAddress.Width = 260;
+            // 
+            // SessionID
+            // 
+            SessionID.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle4.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            SessionID.DefaultCellStyle = dataGridViewCellStyle4;
+            SessionID.HeaderText = "SessionID";
+            SessionID.MinimumWidth = 10;
+            SessionID.Name = "SessionID";
+            SessionID.ReadOnly = true;
+            SessionID.Resizable = DataGridViewTriState.False;
+            SessionID.Width = 250;
+            // 
+            // TelegramNickName
+            // 
+            TelegramNickName.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle5.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            TelegramNickName.DefaultCellStyle = dataGridViewCellStyle5;
+            TelegramNickName.FillWeight = 113.004593F;
+            TelegramNickName.HeaderText = "Telegram";
+            TelegramNickName.MinimumWidth = 10;
+            TelegramNickName.Name = "TelegramNickName";
+            TelegramNickName.Resizable = DataGridViewTriState.False;
+            TelegramNickName.Width = 140;
+            // 
+            // chromePort
+            // 
+            chromePort.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle6.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            chromePort.DefaultCellStyle = dataGridViewCellStyle6;
+            chromePort.HeaderText = "Port";
+            chromePort.Name = "chromePort";
+            chromePort.Resizable = DataGridViewTriState.False;
+            chromePort.Visible = false;
+            chromePort.Width = 80;
+            // 
+            // OffAM
+            // 
+            OffAM.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle7.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle7.NullValue = false;
+            OffAM.DefaultCellStyle = dataGridViewCellStyle7;
+            OffAM.FillWeight = 226.009186F;
+            OffAM.HeaderText = "Off-AM";
+            OffAM.MinimumWidth = 10;
+            OffAM.Name = "OffAM";
+            OffAM.ReadOnly = true;
+            OffAM.Resizable = DataGridViewTriState.False;
+            OffAM.SortMode = DataGridViewColumnSortMode.Automatic;
+            OffAM.Width = 50;
+            // 
+            // OffPM
+            // 
+            OffPM.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle8.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle8.NullValue = false;
+            OffPM.DefaultCellStyle = dataGridViewCellStyle8;
+            OffPM.FillWeight = 226.009186F;
+            OffPM.HeaderText = "Off-PM";
+            OffPM.MinimumWidth = 10;
+            OffPM.Name = "OffPM";
+            OffPM.ReadOnly = true;
+            OffPM.Resizable = DataGridViewTriState.False;
+            OffPM.SortMode = DataGridViewColumnSortMode.Automatic;
+            OffPM.Width = 50;
+            // 
+            // Weekend
+            // 
+            Weekend.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle9.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle9.NullValue = false;
+            Weekend.DefaultCellStyle = dataGridViewCellStyle9;
+            Weekend.HeaderText = "Weekend";
+            Weekend.MinimumWidth = 10;
+            Weekend.Name = "Weekend";
+            Weekend.ReadOnly = true;
+            Weekend.Resizable = DataGridViewTriState.False;
+            Weekend.SortMode = DataGridViewColumnSortMode.Automatic;
+            Weekend.Width = 60;
+            // 
+            // PublicHolidays
+            // 
+            PublicHolidays.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle10.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle10.NullValue = false;
+            dataGridViewCellStyle10.WrapMode = DataGridViewTriState.True;
+            PublicHolidays.DefaultCellStyle = dataGridViewCellStyle10;
+            PublicHolidays.FillWeight = 169.506882F;
+            PublicHolidays.HeaderText = "Public Holiday";
+            PublicHolidays.MinimumWidth = 10;
+            PublicHolidays.Name = "PublicHolidays";
+            PublicHolidays.ReadOnly = true;
+            PublicHolidays.Resizable = DataGridViewTriState.False;
+            PublicHolidays.SortMode = DataGridViewColumnSortMode.Automatic;
+            PublicHolidays.Width = 60;
+            // 
+            // confirmSelected
+            // 
+            confirmSelected.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle11.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle11.NullValue = false;
+            confirmSelected.DefaultCellStyle = dataGridViewCellStyle11;
+            confirmSelected.FillWeight = 226.009186F;
+            confirmSelected.HeaderText = "Select ?";
+            confirmSelected.MinimumWidth = 10;
+            confirmSelected.Name = "confirmSelected";
+            confirmSelected.Resizable = DataGridViewTriState.False;
+            confirmSelected.Width = 50;
+            // 
+            // cmd_Login
+            // 
+            cmd_Login.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle12.BackColor = Color.White;
+            cmd_Login.DefaultCellStyle = dataGridViewCellStyle12;
+            cmd_Login.FlatStyle = FlatStyle.System;
+            cmd_Login.HeaderText = "Sign-In";
+            cmd_Login.Name = "cmd_Login";
+            cmd_Login.Resizable = DataGridViewTriState.False;
+            cmd_Login.Text = "";
+            cmd_Login.ToolTipText = "Login";
+            cmd_Login.Width = 95;
             // 
             // delete_Button
             // 
@@ -361,6 +517,7 @@
             // groupBox2
             // 
             groupBox2.Controls.Add(notifyBeforeClockTime);
+            groupBox2.Controls.Add(registrationNotify);
             groupBox2.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox2.ForeColor = SystemColors.ControlText;
             groupBox2.Location = new Point(330, 570);
@@ -383,9 +540,9 @@
             // 
             registrationNotify.AutoSize = true;
             registrationNotify.Enabled = false;
-            registrationNotify.Location = new Point(965, 648);
+            registrationNotify.Location = new Point(17, 70);
             registrationNotify.Name = "registrationNotify";
-            registrationNotify.Size = new Size(125, 19);
+            registrationNotify.Size = new Size(132, 19);
             registrationNotify.TabIndex = 14;
             registrationNotify.Text = "Notify Registration";
             registrationNotify.UseVisualStyleBackColor = true;
@@ -414,7 +571,7 @@
             // 
             // cmd_Vacation
             // 
-            cmd_Vacation.Location = new Point(975, 599);
+            cmd_Vacation.Location = new Point(970, 559);
             cmd_Vacation.Name = "cmd_Vacation";
             cmd_Vacation.Size = new Size(106, 41);
             cmd_Vacation.TabIndex = 15;
@@ -422,160 +579,15 @@
             cmd_Vacation.UseVisualStyleBackColor = true;
             cmd_Vacation.Click += cmd_Vacation_Click;
             // 
-            // ID
+            // cmd_Creds
             // 
-            ID.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = Color.Black;
-            ID.DefaultCellStyle = dataGridViewCellStyle2;
-            ID.FillWeight = 63.4517822F;
-            ID.HeaderText = "Id";
-            ID.MinimumWidth = 10;
-            ID.Name = "ID";
-            ID.Resizable = DataGridViewTriState.True;
-            ID.Width = 42;
-            // 
-            // EmailAddress
-            // 
-            EmailAddress.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = Color.Black;
-            EmailAddress.DefaultCellStyle = dataGridViewCellStyle3;
-            EmailAddress.FillWeight = 226.009186F;
-            EmailAddress.HeaderText = "Email Address";
-            EmailAddress.MinimumWidth = 10;
-            EmailAddress.Name = "EmailAddress";
-            EmailAddress.Resizable = DataGridViewTriState.False;
-            EmailAddress.Width = 260;
-            // 
-            // SessionID
-            // 
-            SessionID.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle4.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SessionID.DefaultCellStyle = dataGridViewCellStyle4;
-            SessionID.HeaderText = "SessionID";
-            SessionID.MinimumWidth = 10;
-            SessionID.Name = "SessionID";
-            SessionID.ReadOnly = true;
-            SessionID.Resizable = DataGridViewTriState.False;
-            SessionID.Width = 250;
-            // 
-            // TelegramNickName
-            // 
-            TelegramNickName.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle5.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            TelegramNickName.DefaultCellStyle = dataGridViewCellStyle5;
-            TelegramNickName.FillWeight = 113.004593F;
-            TelegramNickName.HeaderText = "Telegram";
-            TelegramNickName.MinimumWidth = 10;
-            TelegramNickName.Name = "TelegramNickName";
-            TelegramNickName.Resizable = DataGridViewTriState.False;
-            TelegramNickName.Width = 140;
-            // 
-            // chromePort
-            // 
-            chromePort.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle6.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            chromePort.DefaultCellStyle = dataGridViewCellStyle6;
-            chromePort.HeaderText = "Port";
-            chromePort.Name = "chromePort";
-            chromePort.Resizable = DataGridViewTriState.False;
-            chromePort.Visible = false;
-            chromePort.Width = 80;
-            // 
-            // OffAM
-            // 
-            OffAM.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle7.NullValue = false;
-            OffAM.DefaultCellStyle = dataGridViewCellStyle7;
-            OffAM.FillWeight = 226.009186F;
-            OffAM.HeaderText = "Off-AM";
-            OffAM.MinimumWidth = 10;
-            OffAM.Name = "OffAM";
-            OffAM.ReadOnly = true;
-            OffAM.Resizable = DataGridViewTriState.False;
-            OffAM.SortMode = DataGridViewColumnSortMode.Automatic;
-            OffAM.Width = 50;
-            // 
-            // OffPM
-            // 
-            OffPM.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle8.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle8.NullValue = false;
-            OffPM.DefaultCellStyle = dataGridViewCellStyle8;
-            OffPM.FillWeight = 226.009186F;
-            OffPM.HeaderText = "Off-PM";
-            OffPM.MinimumWidth = 10;
-            OffPM.Name = "OffPM";
-            OffPM.ReadOnly = true;
-            OffPM.Resizable = DataGridViewTriState.False;
-            OffPM.SortMode = DataGridViewColumnSortMode.Automatic;
-            OffPM.Width = 50;
-            // 
-            // Weekend
-            // 
-            Weekend.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle9.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle9.NullValue = false;
-            Weekend.DefaultCellStyle = dataGridViewCellStyle9;
-            Weekend.HeaderText = "Weekend";
-            Weekend.MinimumWidth = 10;
-            Weekend.Name = "Weekend";
-            Weekend.ReadOnly = true;
-            Weekend.Resizable = DataGridViewTriState.False;
-            Weekend.SortMode = DataGridViewColumnSortMode.Automatic;
-            Weekend.Width = 60;
-            // 
-            // PublicHolidays
-            // 
-            PublicHolidays.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle10.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle10.NullValue = false;
-            dataGridViewCellStyle10.WrapMode = DataGridViewTriState.True;
-            PublicHolidays.DefaultCellStyle = dataGridViewCellStyle10;
-            PublicHolidays.FillWeight = 169.506882F;
-            PublicHolidays.HeaderText = "Public Holiday";
-            PublicHolidays.MinimumWidth = 10;
-            PublicHolidays.Name = "PublicHolidays";
-            PublicHolidays.ReadOnly = true;
-            PublicHolidays.Resizable = DataGridViewTriState.False;
-            PublicHolidays.SortMode = DataGridViewColumnSortMode.Automatic;
-            PublicHolidays.Width = 60;
-            // 
-            // confirmSelected
-            // 
-            confirmSelected.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle11.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle11.NullValue = false;
-            confirmSelected.DefaultCellStyle = dataGridViewCellStyle11;
-            confirmSelected.FillWeight = 226.009186F;
-            confirmSelected.HeaderText = "Select ?";
-            confirmSelected.MinimumWidth = 10;
-            confirmSelected.Name = "confirmSelected";
-            confirmSelected.Resizable = DataGridViewTriState.False;
-            confirmSelected.Width = 50;
-            // 
-            // cmd_Login
-            // 
-            cmd_Login.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle12.BackColor = Color.White;
-            cmd_Login.DefaultCellStyle = dataGridViewCellStyle12;
-            cmd_Login.FlatStyle = FlatStyle.System;
-            cmd_Login.HeaderText = "Sign-In";
-            cmd_Login.Name = "cmd_Login";
-            cmd_Login.Resizable = DataGridViewTriState.False;
-            cmd_Login.Text = "";
-            cmd_Login.ToolTipText = "Login";
-            cmd_Login.Width = 95;
+            cmd_Creds.Location = new Point(970, 625);
+            cmd_Creds.Name = "cmd_Creds";
+            cmd_Creds.Size = new Size(106, 41);
+            cmd_Creds.TabIndex = 16;
+            cmd_Creds.Text = "Set Asterisk";
+            cmd_Creds.UseVisualStyleBackColor = true;
+            cmd_Creds.Click += cmd_Creds_Click;
             // 
             // Form1
             // 
@@ -583,8 +595,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
             ClientSize = new Size(1088, 669);
+            Controls.Add(cmd_Creds);
             Controls.Add(cmd_Vacation);
-            Controls.Add(registrationNotify);
             Controls.Add(cmd_saveData);
             Controls.Add(groupBox3);
             Controls.Add(groupBox2);
@@ -610,7 +622,6 @@
             groupBox2.PerformLayout();
             groupBox3.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -654,5 +665,6 @@
         private DataGridViewCheckBoxColumn PublicHolidays;
         private DataGridViewCheckBoxColumn confirmSelected;
         private DataGridViewButtonColumn cmd_Login;
+        private Button cmd_Creds;
     }
 }
