@@ -22,4 +22,4 @@
     Administrator 
     P@ssw0rdC@nTr@l
 
-    Password to click Exit Button: fuckthelife
+    Password to click Exit Button = fuckthelife = Password zip file
