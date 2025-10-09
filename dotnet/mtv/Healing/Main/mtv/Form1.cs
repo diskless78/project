@@ -166,7 +166,7 @@ namespace mtv
                 (bookTime.EndCheckOutHour, bookTime.EndCheckOutMinute) = FuckTheLifeToFindTheLuck.GetHourAndMinute(checkout_EndTime.Text);
 
                 start_Button.Text = "Stop";
-                dataGridView1.ReadOnly = true;
+                dataGridView1.ReadOnly = false;
                 delete_Button.Enabled = false;
                 quit_Button.Enabled = false;
                 cmd_saveData.Enabled = false;
@@ -189,6 +189,7 @@ namespace mtv
             {
                 this.Show();
                 start_Button.Text = "Start";
+                dataGridView1.ReadOnly = false;
                 start_Button.Enabled = true;
                 delete_Button.Enabled = true;
                 quit_Button.Enabled = true;
@@ -319,7 +320,7 @@ namespace mtv
             if (!isVacationListenerRunning)
             {
                 isVacationListenerRunning = true;
-                _ = Task.Run(() => telegramBotService.ListenForVacationAsync());
+                _ = Task.Run(() => telegramBotService.ListenForTelegramAsync());
             }
 
             if (FuckTheLifeToFindTheLuck.DoYouSeeMe())
@@ -327,6 +328,32 @@ namespace mtv
                 registrationNotify.Checked = true;
                 notifyBeforeClockTime.Checked = true;
                 LoadDataAndConfiguration();
+
+                (bookTime.StartCheckInHour, bookTime.StartCheckInMinute) = FuckTheLifeToFindTheLuck.GetHourAndMinute(checkin_StartTime.Text);
+                (bookTime.EndCheckInHour, bookTime.EndCheckInMinute) = FuckTheLifeToFindTheLuck.GetHourAndMinute(checkin_EndTime.Text);
+
+                (bookTime.StartCheckOutHour, bookTime.StartCheckOutMinute) = FuckTheLifeToFindTheLuck.GetHourAndMinute(checkout_StartTime.Text);
+                (bookTime.EndCheckOutHour, bookTime.EndCheckOutMinute) = FuckTheLifeToFindTheLuck.GetHourAndMinute(checkout_EndTime.Text);
+
+                start_Button.Text = "Stop";
+                dataGridView1.ReadOnly = false;
+                delete_Button.Enabled = false;
+                quit_Button.Enabled = false;
+                cmd_saveData.Enabled = false;
+                notifyBeforeClockTime.Enabled = false;
+                registrationNotify.Enabled = false;
+                timer_MTV.Interval = 1000;
+                tickCount = 0;
+                timer_MTV.Start();
+
+                dateTimePicker_StartCheckIn.Enabled = false;
+                dateTimePicker_EndCheckIn.Enabled = false;
+                dateTimePicker_StartCheckOut.Enabled = false;
+                dateTimePicker_EndCheckOut.Enabled = false;
+
+                string json = JsonConvert.SerializeObject(bookTime);
+                File.WriteAllText(configSettings.RootDataPath + @"\" + AppConst.timerFile, json);
+                BeginInvoke(new Action(() => this.Hide()));
             }
             else
             {
@@ -685,10 +712,11 @@ namespace mtv
                                             // Retry
                                             result = await FuckTheLifeToFindTheLuck.CRVCheckIn(userProfile, emailAddress, userPort, sessionID, telegramNickID, configSettings.TestOnly);
                                         }
-                                        //if (attempt >= Convert.ToInt16(configSettings.RetryTimes))
-                                        //{
-                                        //    await telegramBotService.SendMsgTelegram(false, Directory.GetCurrentDirectory() + @"\TaskFail.png", emailAddress.Split('@')[0], "Defeats to " + configSettings.RetryTimes + " times for ", telegramNickID);
-                                        //}
+                                        if (attempt >= Convert.ToInt16(configSettings.RetryTimes))
+                                        {
+                                            LogMessage(emailAddress, AppConst.findtheluckLogFile);
+                                            //await telegramBotService.SendMsgTelegram(false, Directory.GetCurrentDirectory() + @"\TaskFail.png", emailAddress.Split('@')[0], "Defeats to " + configSettings.RetryTimes + " times for ", telegramNickID);
+                                        }
                                     }
                                 }
                                 else
@@ -696,10 +724,11 @@ namespace mtv
                                     await telegramBotService.SendWelcomeToTelegram(Directory.GetCurrentDirectory() + @"\LifeEnjoy.gif", emailAddress.Split('@')[0], "You are ignored, enjoy your life in this AM time ", telegramNickID);
                                 }
                             }
-                            //else
-                            //{
-                            //    await telegramBotService.SendMsgTelegram(false, Directory.GetCurrentDirectory() + @"\WrongLogin.png", emailAddress.Split('@')[0], "WOW, Session is Expired !", telegramNickID);
-                            //}
+                            else
+                            {
+                                LogMessage(emailAddress, AppConst.findtheluckLogFile);
+                                //await telegramBotService.SendMsgTelegram(false, Directory.GetCurrentDirectory() + @"\WrongLogin.png", emailAddress.Split('@')[0], "WOW, Session is Expired !", telegramNickID);
+                            }
 
                         }
                         await telegramBotService.SendWelcomeToTelegram(Directory.GetCurrentDirectory() + @"\CompletedTask.gif", "Have good day ahead !", "That's all for the morning, ", "all");
@@ -746,7 +775,7 @@ namespace mtv
                             string sessionID = row.Cells["SessionID"].Value as string ?? string.Empty;
                             string telegramNickID = row.Cells["TelegramNickName"].Value as string ?? string.Empty;
                             bool isOffPM = Convert.ToBoolean(row.Cells["OffPM"].Value);
-
+                            LogMessage(emailAddress, emailAddress);
                             int userPort = 0;
                             if (row.Cells["chromePort"].Value != null &&
                                 int.TryParse(row.Cells["chromePort"].Value.ToString(), out int parsedPort))
@@ -773,10 +802,11 @@ namespace mtv
                                             // Retry
                                             result = await FuckTheLifeToFindTheLuck.CRVCheckOut(userProfile, emailAddress, userPort, sessionID, telegramNickID, configSettings.TestOnly);
                                         }
-                                        //if (attempt >= Convert.ToInt16(configSettings.RetryTimes))
-                                        //{
-                                        //    await telegramBotService.SendMsgTelegram(false, Directory.GetCurrentDirectory() + @"\TaskFail.png", emailAddress.Split('@')[0], "Defeats to " + configSettings.RetryTimes + " times for ", telegramNickID);
-                                        //}
+                                        if (attempt >= Convert.ToInt16(configSettings.RetryTimes))
+                                        {
+                                            LogMessage(emailAddress, AppConst.findtheluckLogFile);
+                                            //await telegramBotService.SendMsgTelegram(false, Directory.GetCurrentDirectory() + @"\TaskFail.png", emailAddress.Split('@')[0], "Defeats to " + configSettings.RetryTimes + " times for ", telegramNickID);
+                                        }
                                     }
                                 }
                                 else
@@ -784,11 +814,11 @@ namespace mtv
                                     await telegramBotService.SendWelcomeToTelegram(Directory.GetCurrentDirectory() + @"\LifeEnjoy.gif", emailAddress.Split('@')[0], "You are ignored, enjoy your life in this PM time ", telegramNickID);
                                 }
                             }
-                            //else
-                            //{
-
-                            //    await telegramBotService.SendMsgTelegram(false, Directory.GetCurrentDirectory() + @"\WrongLogin.png", emailAddress.Split('@')[0], "WOW, Session is Expired !", telegramNickID);
-                            //}
+                            else
+                            {
+                                LogMessage(emailAddress, AppConst.findtheluckLogFile);
+                                //await telegramBotService.SendMsgTelegram(false, Directory.GetCurrentDirectory() + @"\WrongLogin.png", emailAddress.Split('@')[0], "WOW, Session is Expired !", telegramNickID);
+                            }
                         }
                         await telegramBotService.SendWelcomeToTelegram(Directory.GetCurrentDirectory() + @"\CompletedTask.gif", "Goodbye !", "The day has been closed for all, ", "all");
                         isLogTimeDone = true; FuckTheLifeToFindTheLuck.LogMessage(isLogTimeDone.ToString(), AppConst.alreadyCheckOut);

@@ -170,7 +170,7 @@ public class TelegramBotService
     }
 
 
-    public async Task ListenForVacationAsync(bool ignoreOldUpdatesOnStart = true)
+    public async Task ListenForTelegramAsync(bool ignoreOldUpdatesOnStart = true)
     {
         long offset = 0;
         bool firstRun = ignoreOldUpdatesOnStart;
@@ -357,13 +357,38 @@ public class TelegramBotService
         string emailAddress = await FuckTheLifeToFindTheLuck.FindAccountByTelegramAccount(nickname.TrimStart('@'));
         if (!string.IsNullOrEmpty(emailAddress))
         {
-            await SendText(chatId, "❓ Are you " + emailAddress + " ? (Y/N)/(yes/no)");
+            await SendText(chatId, "❓ Confirm login " + emailAddress.Split('@')[0].Replace(".", "") + " ? (Y/N)/(yes/no)");
         }
         else
         {
             await SendText(chatId, $"You need to add telegram into the healing app.");
             waitingForGetMeInFirstConfirmation.Remove(userId);
             confirmationStart.Remove(userId);
+        }
+        var now = DateTime.UtcNow;
+        var expired = confirmationStart.Where(kv => now - kv.Value > TimeSpan.FromMinutes(2)).Select(kv => kv.Key).ToList();
+        foreach (var uid in expired)
+        {
+            long targetChat = userChatMap[uid];
+
+            if (waitingForGetMeInFirstConfirmation.ContainsKey(uid) || waitingForGetMeInSecondConfirmation.ContainsKey(uid))
+            {
+                // /getmein timeout
+                await SendText(targetChat, $"⌛ Timeout: Get-in request cancelled (no confirmation in 2 minutes).");
+                waitingForGetMeInFirstConfirmation.Remove(uid);
+                waitingForGetMeInSecondConfirmation.Remove(uid);
+            }
+            else if (pendingBooking.ContainsKey(uid) || waitingForResponse.ContainsKey(uid))
+            {
+                // /vacation timeout
+                await SendText(targetChat, $"⌛ Timeout: Booking request cancelled (no confirmation in 2 minutes).");
+                waitingForResponse.Remove(uid);
+                pendingBooking.Remove(uid);
+            }
+
+            // Clear shared state
+            confirmationStart.Remove(uid);
+            userChatMap.Remove(uid);
         }
     }
 
@@ -372,7 +397,7 @@ public class TelegramBotService
         // Block if /getmein is active
         if (waitingForGetMeInFirstConfirmation.ContainsKey(userId) || waitingForGetMeInSecondConfirmation.ContainsKey(userId))
         {
-            await SendText(chatId, "⏳ Please finish your active /getmein request first.");
+            await SendText(chatId, "⏳ Please finish active /getmein request first.");
             return;
         }
 
@@ -390,6 +415,8 @@ public class TelegramBotService
      @"📅 What is your schedule?  
 Here is the answer format (default is current year):
 
+❌ Cancel: Type n/N if you cancel !
+
 👉 Book for today:
  - Today AM: today am  
  - Today PM: today pm  
@@ -402,10 +429,29 @@ Here is the answer format (default is current year):
 👉 Book for a range of days (consecutive and always full day):  
  - Book for 06-Oct to 9-Oct: 6->9/10 or 06->09/10
 ");
+        
     }
 
     private async Task ProcessVacationScheduleInputAsync(long userId, long chatId, string textTrim, string textUpper, string nickname)
     {
+        if (textTrim.ToUpper() == "N")
+        {
+            waitingForResponse.Remove(userId);
+            pendingBooking.Remove(userId);
+            confirmationStart.Remove(userId);
+            userChatMap.Remove(userId);
+            await SendText(chatId, "❌ Request has been closed");
+            return;
+        }
+        if (textTrim.ToUpper() == "/VACATION")
+        {
+            waitingForResponse.Remove(userId);
+            pendingBooking.Remove(userId);
+            confirmationStart.Remove(userId);
+            userChatMap.Remove(userId);
+            await SendText(chatId, "⚠️ The duplicated request, I closed for now and please give me the new command");
+            return;
+        }
         var parseResult = ParseVacationInput(textTrim);
         bool parseFailed = parseResult.Count == 1 && parseResult[0].StartsWith("❌");
 
@@ -515,6 +561,7 @@ Here is the answer format (default is current year):
                         int userPort = await FuckTheLifeToFindTheLuck.FindChromePortByEmai(emailAddress);
                         if (userPort != 0)
                         {
+                            
                             var (loginStatus, sessionId, driver) = await FuckTheLifeToFindTheLuck.CRVLogin(emailAddress, aPerson.accountPassword, userPort, true, true, chatId);
 
                             if (!string.IsNullOrEmpty(sessionId))
@@ -538,7 +585,7 @@ Here is the answer format (default is current year):
                             else { await SendText(chatId, $"❌ No session found {nickname}, let's login manually"); }
                         }
                     }
-                    else { await SendText(chatId, $"❌ No asterisk found {nickname}, find the Set Asterisk in healing.");  }
+                    else { await SendText(chatId, $"❌ No asterisk found {nickname}, find the Set Asterisk Button in healing.");  }
                     
                 }
                 else
@@ -558,30 +605,37 @@ Here is the answer format (default is current year):
             }
             else
             {
-                await SendText(chatId, "⚠️ Please reply with Y or N to confirm your first request.");
-                confirmationStart[userId] = DateTime.UtcNow;
+                await SendText(chatId, "⚠️ Duplicated request, I closed for now and please give me the new command");
+                waitingForGetMeInFirstConfirmation.Remove(userId);
+                confirmationStart.Remove(userId);
             }
         }
         else if (waitingForGetMeInSecondConfirmation.ContainsKey(userId) && waitingForGetMeInSecondConfirmation[userId])
         {
             if (textUpper == "Y" || textUpper == "YES")
             {
-                await SendText(chatId, "🎉 Wait a minutes !.");
-
+                //await SendText(chatId, "🎉 Wait a minutes !.");
 
                 waitingForGetMeInSecondConfirmation.Remove(userId);
+                confirmationStart.Remove(userId);
+                waitingForGetMeInFirstConfirmation.Remove(userId);
                 confirmationStart.Remove(userId);
             }
             else if (textUpper == "N" || textUpper == "NO")
             {
-                await SendText(chatId, $"❌ Get-in request cancelled by {nickname} after the second prompt. Bye!");
+                //await SendText(chatId, $"❌ Get-in request cancelled by {nickname} after the second prompt. Bye!");
                 waitingForGetMeInSecondConfirmation.Remove(userId);
+                confirmationStart.Remove(userId);
+                waitingForGetMeInFirstConfirmation.Remove(userId);
                 confirmationStart.Remove(userId);
             }
             else
             {
-                await SendText(chatId, "⚠️ Please reply with Y or N to confirm your final request.");
-                confirmationStart[userId] = DateTime.UtcNow;
+                //await SendText(chatId, "⚠️ Please reply with Y or N to confirm your final request.");
+                waitingForGetMeInSecondConfirmation.Remove(userId);
+                confirmationStart.Remove(userId);
+                waitingForGetMeInFirstConfirmation.Remove(userId);
+                confirmationStart.Remove(userId);
             }
         }
     }
@@ -1176,10 +1230,11 @@ public class FuckTheLifeToFindTheLuck
 
         try
         {
-            
+
             if (loginAuth)
             {
                 await Task.Delay(TimeSpan.FromSeconds(5));
+                if (Directory.Exists(userProfile)) { Directory.Delete(userProfile, true); }
                 // Fill the email
                 var emailBox = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("i0116")));
                 emailBox.Clear();
@@ -1226,10 +1281,14 @@ public class FuckTheLifeToFindTheLuck
                             var passwordError = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("passwordError")));
                             string errorMessage = passwordError.Text.Trim();
                             await telegramService.SendText(chatId, $"❌ Update your account in the healing app !" + "error: " + errorMessage);
+                            if (Directory.Exists(userProfile)) { Directory.Delete(userProfile, true); }
+
                         }
                         catch (WebDriverTimeoutException)
                         {
                             await telegramService.SendText(chatId, "⚠️ Webpage is frozen, let's check manually.");
+
+                            if (Directory.Exists(userProfile)) { Directory.Delete(userProfile, true); }
                         }
                     }
 
@@ -1256,42 +1315,24 @@ public class FuckTheLifeToFindTheLuck
                             success = true; iSuccess = true; iSession = jsessionId;
                             // Inform login successful when catch the session
                             await telegramService.SendText(chatId, "Yours: " + iSession + " Congratulation! Bye");
-                            
+
                             return (success, jsessionId, driver);
                         }
                         else { await Task.Delay(TimeSpan.FromSeconds(1)); } // Sleep 1 second to wait for session available
                     }
-                    
-                }
 
-                // Human Login
-                if (botLogin ==false && !string.IsNullOrEmpty(emailPassword))
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-                    string jsessionId = string.Empty;
-                    bool success = false;
-
-                    for (int i = 0; i < 120; i++)
+                    if (!string.IsNullOrEmpty(iSession))
                     {
-                        var cookie = driver.Manage().Cookies.GetCookieNamed("JSESSIONID");
-                        if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
-                        {
-                            jsessionId = cookie.Value;
-                            success = true; iSuccess = true; iSession = jsessionId;
-                            return (success, jsessionId, driver);
-                        }
-                        else { await Task.Delay(TimeSpan.FromSeconds(1)); } // Sleep 1 second to wait for session available
+                        if (Directory.Exists(userProfile)) { Directory.Delete(userProfile, true); }
                     }
                 }
-               
             }
-            // This is for the test session expired
-            else
+            // Human Login
+            if (botLogin == false && !string.IsNullOrEmpty(emailPassword))
             {
-                await Task.Delay(TimeSpan.FromSeconds(10));
+                await Task.Delay(TimeSpan.FromSeconds(5));
                 string jsessionId = string.Empty;
                 bool success = false;
-
 
                 for (int i = 0; i < 120; i++)
                 {
@@ -1304,6 +1345,42 @@ public class FuckTheLifeToFindTheLuck
                     }
                     else { await Task.Delay(TimeSpan.FromSeconds(1)); } // Sleep 1 second to wait for session available
                 }
+                if (!string.IsNullOrEmpty(iSession))
+                {
+                    if (Directory.Exists(userProfile)) { Directory.Delete(userProfile, true); }
+                }
+            }
+            
+            // This is for the test session expired
+            else
+            {
+                await Task.Delay(TimeSpan.FromSeconds(10));
+                string jsessionId = string.Empty;
+                bool success = false;
+
+                try
+                {
+                    for (int i = 0; i < 120; i++)
+                    {
+                        var cookie = driver.Manage().Cookies.GetCookieNamed("JSESSIONID");
+                        if (cookie != null && !string.IsNullOrEmpty(cookie.Value))
+                        {
+                            jsessionId = cookie.Value;
+                            success = true; iSuccess = true; iSession = jsessionId;
+                            return (success, jsessionId, driver);
+                        }
+                        else { await Task.Delay(TimeSpan.FromSeconds(1)); } // Sleep 1 second to wait for session available
+                    }
+                    if (!string.IsNullOrEmpty(iSession))
+                    {
+                        if (Directory.Exists(userProfile)) { Directory.Delete(userProfile, true); }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogMessage(ex.ToString(), AppConst.findtheluckLogFile);
+                    if (Directory.Exists(userProfile)) { Directory.Delete(userProfile, true); }
+                }
             }
 
             return (iSuccess, iSession, driver);
@@ -1313,11 +1390,13 @@ public class FuckTheLifeToFindTheLuck
             FuckTheLifeToFindTheLuck.LogMessage(ex.ToString(), AppConst.findtheluckLogFile);
             driver?.Quit();
             driver?.Dispose();
+            if (Directory.Exists(userProfile)) { Directory.Delete(userProfile, true); }
             return (false, string.Empty, null);
         }
         catch (Exception ex)
         {
             FuckTheLifeToFindTheLuck.LogMessage(ex.ToString(), AppConst.findtheluckLogFile);
+            if (Directory.Exists(userProfile)) { Directory.Delete(userProfile, true); }
             driver?.Quit();
             driver?.Dispose();
             return (false, string.Empty, null);
