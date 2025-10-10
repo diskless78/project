@@ -30,7 +30,6 @@ namespace mtv
         HashSet<int> usedPorts = new HashSet<int>();
         int basePort = 9210;
         int maxPort = 9299;
-        int countPersonExpired = 0;
 
         private int tickCount = 0;
         private readonly mtv.ConfigurationSettings configSettings;
@@ -39,7 +38,8 @@ namespace mtv
         private bool notifyBeforeCheckIn = false;
         private bool notifyBeforeCheckOut = false;
         private bool notifyDaily = false;
-        private bool checkSessionExiredDone = false; // Set = True for testing
+        private bool checkSessionExired21hDone = false;
+        private bool checkSessionExired10hhDone = false;
         private FileSystemWatcher? watcher;
         public BookTime bookTime = new BookTime();
         public Holidays publicHoliday = new Holidays();
@@ -103,13 +103,6 @@ namespace mtv
                     {
                         string userName = employee.personName.Split('@')[0];
                         string userVacationFile = Path.Combine(configSettings.RootDataPath, $"vacation_{userName}.txt");
-
-                        //    FormScreenshot.CaptureRegistrationList(this, appScreenshot);
-                        //    await telegramBotService.SendMsgTelegram(true, appScreenshot, userName, "Congratulations! You've successfully registered ", "all");
-                        //    await telegramBotService.SendMsgTelegram(false, Directory.GetCurrentDirectory() + @"\WelcomeNewMember.png", userName, "Congratulations! You've successfully registered ", employee.telegramID);
-                        //    File.Delete(appScreenshot);
-                        //    File.Delete(tempFilePath);
-                        //}
 
                         if (File.Exists(userVacationFile))
                         {
@@ -495,8 +488,9 @@ namespace mtv
             DateTime startTimeCheckOut = new DateTime(now.Year, now.Month, now.Day, bookTime.StartCheckOutHour, bookTime.StartCheckOutMinute, 0);
             DateTime endTimeCheckOut = new DateTime(now.Year, now.Month, now.Day, bookTime.EndCheckOutHour, bookTime.EndCheckOutMinute, 0);
 
-            if (DateTime.Now.Hour >= 21 & checkSessionExiredDone == false)
+            if (DateTime.Now.Hour == 11 && !checkSessionExired10hhDone)
             {
+                int countPersonExpired = 0;
                 List<Employee> employees = FuckTheLifeToFindTheLuck.ReadUserDetails(configSettings.RootDataPath + @"\" + configSettings.UserAccountFile);
 
                 for (int i = 0; i < employees.Count; i++)
@@ -517,15 +511,51 @@ namespace mtv
                             employee.sessionID = string.Empty;
                             employees[i] = employee;
 
-                            await telegramBotService.SendMsgTelegram(false, Directory.GetCurrentDirectory() + @"\SessionExpired.png", employee.personName.Split('@')[0].Replace(".", ""), "Your session is expired, pls login again !", employee.telegramID);
+                            await telegramBotService.SendMsgTelegram(false, Directory.GetCurrentDirectory() + @"\SessionExpired.png", employee.personName.Split('@')[0].Replace(".", ""), "Your session is expired, please follow the instruction that sent for you privately !", employee.telegramID);
                         }
                         driver?.Quit();
                         await Task.Delay(TimeSpan.FromSeconds(30));
+                        FuckTheLifeToFindTheLuck.LogMessage(employee.personName.Split('@')[0].Replace(".", "") + ":" + sessionId, AppConst.findtheluckLogFile);
                     }
                 }
+                if (countPersonExpired > 0)
+                    FuckTheLifeToFindTheLuck.WriteUserDetails(configSettings.RootDataPath + @"\" + configSettings.UserAccountFile, employees);
+                checkSessionExired10hhDone = true;
+            }
+            if (DateTime.Now.Hour == 21 && !checkSessionExired21hDone)
+            {
+                int countPersonExpired = 0;
+                List<Employee> employees = FuckTheLifeToFindTheLuck.ReadUserDetails(configSettings.RootDataPath + @"\" + configSettings.UserAccountFile);
 
-                FuckTheLifeToFindTheLuck.WriteUserDetails(configSettings.RootDataPath + @"\" + configSettings.UserAccountFile, employees);
-                checkSessionExiredDone = true;
+                for (int i = 0; i < employees.Count; i++)
+                {
+                    Employee employee = employees[i];
+
+                    if (!string.IsNullOrEmpty(employee.personName) && !string.IsNullOrEmpty(employee.sessionID))
+                    {
+                        var (loginStatus, sessionId, driver) = await FuckTheLifeToFindTheLuck.CRVLogin(employee.personName, string.Empty, employee.chromePort, false, false, 0);
+                        if (!string.IsNullOrEmpty(sessionId))
+                        {
+                            employee.sessionID = sessionId;
+                            employees[i] = employee;
+                        }
+                        else
+                        {
+                            countPersonExpired++;
+                            employee.sessionID = string.Empty;
+                            employees[i] = employee;
+
+                            await telegramBotService.SendMsgTelegram(false, Directory.GetCurrentDirectory() + @"\SessionExpired.png", employee.personName.Split('@')[0].Replace(".", ""), "Your session is expired, please follow the instruction that sent for you privately !", employee.telegramID);
+                        }
+                        driver?.Quit();
+                        await Task.Delay(TimeSpan.FromSeconds(30));
+                        FuckTheLifeToFindTheLuck.LogMessage(employee.personName.Split('@')[0].Replace(".", "") + ":" + sessionId, AppConst.findtheluckLogFile);
+                    }
+                    
+                }
+                if (countPersonExpired > 0)
+                    FuckTheLifeToFindTheLuck.WriteUserDetails(configSettings.RootDataPath + @"\" + configSettings.UserAccountFile, employees);
+                checkSessionExired21hDone = true;
             }
             if (now.Date > previousDate)
             {
@@ -541,68 +571,8 @@ namespace mtv
                 List<Employee> employees = FuckTheLifeToFindTheLuck.ReadUserDetails(configSettings.RootDataPath + @"\" + configSettings.UserAccountFile);
                 FuckTheLifeToFindTheLuck.DataCleansing(AppConst.vacationFolder, employees);
                 LoadDataAndConfiguration();
-                checkSessionExiredDone = false;
-                countPersonExpired = 0;
-            }
-
-            // Application HealthCheck
-            if (tickCount >= int.Parse(configSettings.HealthCheckDuration) * AppConst.MilliSecondPerMinute)
-            {
-                string msgContent = string.Empty;
-                string msgCaption = string.Empty;
-                string timeCapture = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
-                string fileName = "Registration-List-" + timeCapture + ".png";
-                string appScreenshot = Path.Combine(Directory.GetCurrentDirectory(), fileName);
-                try
-                {
-                    if (Directory.Exists(AppConst.findtheluckLogDirectory))
-                    {
-                        string[] filePaths = Directory.GetFiles(AppConst.findtheluckLogDirectory);
-                        if (filePaths.Length > 0)
-                        {
-                            msgCaption = "Here is the logs in last execution:" + Environment.NewLine;
-                            foreach (string filePath in filePaths)
-                            {
-                                try
-                                {
-                                    string fileContent = File.ReadAllText(filePath);
-                                    msgContent += fileContent + Environment.NewLine;
-                                }
-                                catch (Exception ex)
-                                {
-                                    FuckTheLifeToFindTheLuck.LogMessage(ex.ToString(), AppConst.findtheluckLogFile);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            msgCaption = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + " : ";
-                            msgContent = "Application is running as normal.";
-                        }
-                        try
-                        {
-                            Directory.Delete(AppConst.findtheluckLogDirectory, true);
-                        }
-                        catch (Exception ex)
-                        {
-                            FuckTheLifeToFindTheLuck.LogMessage("Error deleting directory: " + ex.ToString(), AppConst.findtheluckLogFile);
-                        }
-                    }
-                    else
-                    {
-                        msgCaption = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + " : ";
-                        msgContent = "Application is running as normal.";
-                    }
-
-                    FormScreenshot.CaptureRegistrationList(this, appScreenshot);
-                    TelegramBotService telegramBotService = new TelegramBotService();
-                    await telegramBotService.SendMsgTelegram(true, appScreenshot, msgContent, msgCaption, "all");
-                    File.Delete(appScreenshot); tickCount = 0;
-                }
-                catch (Exception ex)
-                {
-                    FuckTheLifeToFindTheLuck.LogMessage(ex.Message, AppConst.findtheluckLogFile);
-                }
+                checkSessionExired21hDone = false;
+                checkSessionExired10hhDone = false;
             }
 
             try
