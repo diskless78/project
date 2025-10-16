@@ -1477,7 +1477,7 @@ public class FuckTheLifeToFindTheLuck
                 {
                     driver.FindElement(By.Id(clockInSpanId)).Click();
 
-                    await Task.Delay(TimeSpan.FromSeconds(5));
+                    await Task.Delay(TimeSpan.FromSeconds(3));
 
                     // Find OK Button
                     IWebElement okButtonSpan = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[contains(@class, 'x-button-label') and contains(text(), 'OK')]")));
@@ -1592,7 +1592,7 @@ public class FuckTheLifeToFindTheLuck
                 {
                     driver.FindElement(By.Id(clockOutSpanId)).Click();
 
-                    await Task.Delay(TimeSpan.FromSeconds(5));
+                    await Task.Delay(TimeSpan.FromSeconds(3));
 
                     //Find OK Button
                     IWebElement okButtonSpan = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[contains(@class, 'x-button-label') and contains(text(), 'OK')]")));

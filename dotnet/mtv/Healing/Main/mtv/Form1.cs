@@ -635,10 +635,10 @@ namespace mtv
                             string fileName = "Registration-List-" + timeCapture + ".png";
                             string appScreenshot = Path.Combine(Directory.GetCurrentDirectory(), fileName);
                             FormScreenshot.CaptureRegistrationList(this, appScreenshot);
-                            string allAccount = "everyone online, individuals will be retried " + configSettings.RetryTimes + " times in case of failures.";
+                            string allAccount = "Salut !.";
 
-                            await telegramBotService.SendWelcomeToTelegram(Directory.GetCurrentDirectory() + @"\StartTask.gif", allAccount, "Good morning to ", "all");
-                            await telegramBotService.SendMsgTelegram(true, appScreenshot, "action in this morning", "Status before ", "all");
+                            await telegramBotService.SendWelcomeToTelegram(Directory.GetCurrentDirectory() + @"\StartTask.gif", allAccount, "It's time to say ", "all");
+                            //await telegramBotService.SendMsgTelegram(true, appScreenshot, "action in this morning", "Status before ", "all");
                             notifyBeforeCheckIn = true; File.Delete(appScreenshot);
                         }
 
@@ -725,10 +725,10 @@ namespace mtv
                             string fileName = "Registration-List-" + timeCapture + ".png";
                             string appScreenshot = Path.Combine(Directory.GetCurrentDirectory(), fileName);
                             FormScreenshot.CaptureRegistrationList(this, appScreenshot);
-                            string allAccount = "all those online, individuals will be retried up to " + configSettings.RetryTimes + " times in case of any failures.";
+                            string allAccount = "say Goodbye !.";
 
-                            await telegramBotService.SendWelcomeToTelegram(Directory.GetCurrentDirectory() + @"\StartTask.gif", allAccount, "Goodbye for ", "all");
-                            await telegramBotService.SendMsgTelegram(true, appScreenshot, "close the day", "Status before ", "all");
+                            await telegramBotService.SendWelcomeToTelegram(Directory.GetCurrentDirectory() + @"\StartTask.gif", allAccount, "It's time to ", "all");
+                            //await telegramBotService.SendMsgTelegram(true, appScreenshot, "close the day", "Status before ", "all");
                             notifyBeforeCheckOut = true; File.Delete(appScreenshot);
 
                         }
