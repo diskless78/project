@@ -674,13 +674,15 @@ namespace mtv
                                     await Task.Delay(SleepTimeGenerator.GenerateRandomSleepTime((int.Parse(configSettings.Random_Min)) * AppConst.MilliSecondPerMinute, (int.Parse(configSettings.Random_Max)) * AppConst.MilliSecondPerMinute) + 45000);
 
                                     var result = await FuckTheLifeToFindTheLuck.CRVCheckIn(userProfile, emailAddress, userPort, sessionID, telegramNickID, configSettings.TestOnly);
+                                    
                                     if (result == false)
                                     {
                                         while (attempt <= Convert.ToInt16(configSettings.RetryTimes))
                                         {
                                             attempt++;
                                             // Retry
-                                            result = await FuckTheLifeToFindTheLuck.CRVCheckIn(userProfile, emailAddress, userPort, sessionID, telegramNickID, configSettings.TestOnly);
+                                            //result = await FuckTheLifeToFindTheLuck.CRVCheckIn(userProfile, emailAddress, userPort, sessionID, telegramNickID, configSettings.TestOnly);
+                                            FuckTheLifeToFindTheLuck.LogMessage(emailAddress, AppConst.findtheluckLogFile);
                                         }
                                         if (attempt >= Convert.ToInt16(configSettings.RetryTimes))
                                         {
@@ -769,8 +771,9 @@ namespace mtv
                                         while (attempt <= Convert.ToInt16(configSettings.RetryTimes))
                                         {
                                             attempt++;
+                                            FuckTheLifeToFindTheLuck.LogMessage(emailAddress, AppConst.findtheluckLogFile);
                                             // Retry
-                                            result = await FuckTheLifeToFindTheLuck.CRVCheckOut(userProfile, emailAddress, userPort, sessionID, telegramNickID, configSettings.TestOnly);
+                                            //result = await FuckTheLifeToFindTheLuck.CRVCheckOut(userProfile, emailAddress, userPort, sessionID, telegramNickID, configSettings.TestOnly);
                                         }
                                         if (attempt >= Convert.ToInt16(configSettings.RetryTimes))
                                         {
