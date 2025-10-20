@@ -1,3 +1,5 @@
+CxViewAdmin@2025
+
 Hướng dẫn truy cập và sử dụng hệ thống platform cxview mới:
 - Sử dụng openvpn community edition download cài đặt nếu chưa có: https://openvpn.net/community/
 - Import file cấu hình openvpn hcm-cxview-<username>.ovpn
@@ -20,3 +22,5 @@ Hướng dẫn truy cập và sử dụng hệ thống platform cxview mới:
 	+ Gửi info repos cần access để cấp quyền 
 
 - Chú ý: trên jumpbox truy cập vào xdata.cxview.ai & admin.cxview.ai đang được point vào địa chỉ IP internal của hệ thống mới.
+
+
