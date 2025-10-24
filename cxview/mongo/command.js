@@ -1,3 +1,4 @@
+// use cxview
 db.createUser(
    {
      user: "minh.pham",
@@ -19,13 +20,14 @@ db.createUser(
    }
 )
 
-
+// use admin
 db.createUser(
    {
-     user: "len.vo",
-     pwd: passwordPrompt(),
-     roles: [
-        { role: "readWrite", db: "cxview" }
-     ]
+      user: "minh.pham",
+      pwd: passwordPrompt(),
+      roles: [
+         { role: "root", db: "admin" }
+      ]
    }
 )
+
