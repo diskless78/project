@@ -18,3 +18,14 @@ db.createUser(
      ]
    }
 )
+
+
+db.createUser(
+   {
+     user: "len.vo",
+     pwd: passwordPrompt(),
+     roles: [
+        { role: "readWrite", db: "cxview" }
+     ]
+   }
+)
