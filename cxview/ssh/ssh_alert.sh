@@ -2,7 +2,6 @@
 
 # --- CONFIGURATION ---
 TELEGRAM_BOT_TOKEN="8457927004:AAEsyZQfJAztHXvkA830j4kLQYINVJ7ee_s"
-# CORRECTED: Ensure the Chat ID has only a single leading minus sign.
 TELEGRAM_CHAT_ID="-5013802399"
 BASE_URL="https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage"
 LOG_FILE="/var/log/auth.log"
@@ -15,7 +14,6 @@ if [ -z "$PAM_USER" ] || [ -z "$PAM_RHOST" ]; then
     exit 1
 fi
 
-# Find connection
 USER_NAME="$PAM_USER"
 REMOTE_IP="$PAM_RHOST"
 SERVER_NAME=$(hostname)
@@ -38,7 +36,8 @@ find_key_comment() {
     if [[ "$fingerprint" != "Not found/password login" ]] && [ -f "$authorized_keys_file" ]; then
         if ! [ -r "$authorized_keys_file" ]; then
             comment="Access denied to $authorized_keys_file"
-            return 
+            echo "$comment"
+            return
         fi
 
         while IFS= read -r key_line || [[ -n "$key_line" ]]; do
@@ -48,13 +47,11 @@ find_key_comment() {
             fi
 
             KEY_STRING=$(echo "$key_line" | awk '{print $1, $2}')
-            
             echo "$KEY_STRING" > "$temp_file"
             
             KEY_FILE_FINGERPRINT=$(ssh-keygen -l -E sha256 -f "$temp_file" 2>/dev/null | awk '{print $2}')
-            
-            rm -f "$temp_file"
 
+            # If fingerprints match, extract comment
             if [[ "$KEY_FILE_FINGERPRINT" == "$fingerprint" ]]; then
                 COMMENT_DATA=$(echo "$key_line" | awk '{$1=$2=$3=""; sub(/^ * /, ""); print}')
                 if [ -z "$COMMENT_DATA" ]; then
@@ -74,7 +71,6 @@ find_key_comment() {
     echo "$comment"
 }
 
-
 sleep 1
 
 KEY_FINGERPRINT="Not found/password login"
@@ -83,8 +79,7 @@ FINGERPRINT_LINE=""
 if command -v journalctl &> /dev/null; then
     FINGERPRINT_LINE=$(journalctl _SYSTEMD_UNIT=ssh.service \
         --since "1 minute ago" \
-        -g "Accepted publickey for ${USER_NAME} from ${REMOTE_IP}" \
-        -o cat | tail -n 1)
+        -o cat | grep "Accepted publickey for ${USER_NAME} from ${REMOTE_IP}" | tail -n 1)
 elif [ -f "$LOG_FILE" ]; then
     FINGERPRINT_LINE=$(tail -n 50 "$LOG_FILE" | grep "Accepted publickey for $USER_NAME from $REMOTE_IP" | tail -n 1)
 fi
@@ -111,7 +106,7 @@ escape_markdown() {
     text="${text//(/\\(}"
     text="${text//)/\\)}"
     text="${text//\*/\\*}"
-    text="${text//`/\\`}"
+    text="${text//\`/\\\`}"
     text="${text//\#/\\#}"
     text="${text//+/\\+}"
     text="${text//\{/\\{}"
@@ -142,8 +137,6 @@ MESSAGE="🚨 *SSH Login Alert* 🚨
 \`Connection\`: ${ESCAPED_CONN_DETAILS}
 *Key Fingerprint*: \`${ESCAPED_FINGERPRINT}\`
 *Key Comment*: \`${ESCAPED_KEY_COMMENT}\`"
-
-# --- SEND THE TELEGRAM MESSAGE ---
 
 RESPONSE=$(curl -s -X POST "${BASE_URL}" \
      -d chat_id="${TELEGRAM_CHAT_ID}" \
