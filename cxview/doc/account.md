@@ -1,3 +1,5 @@
+# SSH Public key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ1mrG3pV6QIFMAY66o+2Kd66HxCq0x2E8JoXQ5F19IH marcus.duong@cxview.ai
+
 # VPN
     username: thanh.duong
     password: Drowssap!0
@@ -12,5 +14,7 @@ Project: marcus.duong@cxview.ai
 Password: Drowssap!0
 
 
+cxviewadmin
+CxViewAdmin@2025
 
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ1mrG3pV6QIFMAY66o+2Kd66HxCq0x2E8JoXQ5F19IH marcus.duong@cxview.ai
+ESXi: root/Eztech@!123
