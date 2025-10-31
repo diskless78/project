@@ -9,9 +9,4 @@ For a description of the Bot API, see this page: https://core.telegram.org/bots/
 https://api.telegram.org/bot8457927004:AAEsyZQfJAztHXvkA830j4kLQYINVJ7ee_s/getUpdates
 
 Token: 8457927004:AAEsyZQfJAztHXvkA830j4kLQYINVJ7ee_s
-
-"chat": {
-  "id": -5013802399,
-  "title": "CXView_Alarm",
-  "type": "group"
-}
+CHAT_ID="-1003262590904"
